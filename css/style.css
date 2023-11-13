@@ -1,0 +1,18 @@
+/* ==[ index.html ]================================================================================================== */
+body {
+    text-align: center;
+}
+
+#content {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 48px;
+}
+
+#content-left {
+    display: flex;
+    align-items: center;
+}
+
+/* ==[ generational biases scatterplot ]============================================================================= */
