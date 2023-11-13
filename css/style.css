@@ -7,7 +7,12 @@ body {
     display: flex;
     width: 100%;
     justify-content: center;
-    gap: 32px;
+    gap: 48px;
+}
+
+#content-left {
+    display: flex;
+    align-items: center;
 }
 
 /* ==[ generational biases scatterplot ]============================================================================= */
