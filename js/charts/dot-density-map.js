@@ -11,39 +11,50 @@ class DotDensityMap {
                 left: 0
             }
         }
-        this.dispatcher = dispatcher
-        this.initVis()
+        this.dispatcher = dispatcher;
+        this.stateBorders = _config.stateBorders; 
+        this.initVis();
     }
 
     initVis() {
-        let vis = this
+        let vis = this;
 
-        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
+        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
         vis.svg = d3.select(vis.config.parentElement).append('svg')
             .attr('width', vis.config.containerWidth)
-            .attr('height', vis.config.containerHeight)
-            // TODO delete, just to make it visible
-            .attr('style', 'background-color:yellow')
+            .attr('height', vis.config.containerHeight);
 
-        // TODO
+        // Call the update function to render the map
+        vis.updateVis();
     }
 
     updateVis() {
-        let vis = this
+        // TODO: Any update logic if needed
 
-        // TODO
-
-        // TODO delete placeholder
-        vis.dispatcher.call('placeholder', null, vis.config.parentElement)
-
-        vis.renderVis()
+        // Render the visualization
+        this.renderVis();
     }
 
     renderVis() {
-        let vis = this
+        let vis = this;
 
-        // TODO
+        // Set up a projection for the map
+        const projection = d3.geoAlbersUsa()
+            .translate([vis.width / 2, vis.height / 2])
+            .scale(1020);
+
+        // Create a path generator
+        const path = d3.geoPath().projection(projection);
+
+        // Bind data and create path elements for each state
+        vis.svg.selectAll('path')
+            .data(vis.stateBorders)
+            .enter().append('path')
+            .attr('d', path)
+            .attr('stroke', '#000') 
+            .attr('stroke-width', 1) 
+            .attr('fill', '#fff'); 
     }
 }
