@@ -1,13 +1,36 @@
+/* ==[ colors ]====================================================================================================== */
+
+:root {
+    --white: #fff;
+    --black: #000;
+    --hover-shadow: rgb(0 0 0 / 0.1);
+}
+
+[data-theme="dark"] {
+    --white: #000;
+    --black: #fff;
+    --hover-shadow: rgb(255 255 255 / 0.1);
+}
+
 /* ==[ index.html ]================================================================================================== */
 body {
     text-align: center;
+    background-color: var(--white);
+    color: var(--black);
+}
+
+#header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #content {
     display: flex;
     width: 100%;
+    gap: 16px;
     justify-content: center;
-    gap: 48px;
+    box-sizing: border-box;
 }
 
 #content-left {
@@ -15,4 +38,54 @@ body {
     align-items: center;
 }
 
-/* ==[ generational biases scatterplot ]============================================================================= */
+.svg-container {
+    padding: 16px;
+}
+
+/* ==[ tooltips ]==================================================================================================== */
+
+.hoverable {
+    cursor: pointer;
+}
+
+.tooltip {
+    z-index: 10;
+    position: absolute;
+    display: none;
+    min-width: 160px;
+    max-width: 240px;
+
+    background: var(--white);
+    box-shadow: 2px 2px 5px 4px var(--hover-shadow);
+    padding: 8px;
+
+    border-radius: 4px;
+
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.tooltip-title {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* ==[ shared ]====================================================================================================== */
+
+.axis-label {
+    alignment-baseline: hanging;
+}
+
+.end-label {
+    text-anchor: end;
+}
+
+/* ==[ generational biases ]========================================================================================= */
+
+/* ==[ dark mode toggle ]============================================================================================ */
+
+#dark-mode-switch {
+    position: absolute;
+    right: 16px;
+}

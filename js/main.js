@@ -3,6 +3,8 @@ let dotDensityMap, dualDataScatterplot, smallMultiplesScatterplotsWrapper
 
 const dispatcher = d3.dispatch('placeholder')
 
+let isDarkMode = false
+
 /**
  * ==[ HELPERS ]========================================================================================================
  */
@@ -54,8 +56,8 @@ d3.csv('data/social-capital-usa-colleges.csv').then(data => {
     console.log(allData[0])
 
     dotDensityMap = new DotDensityMap({parentElement: '#dot-density-map'}, dispatcher)
-    dualDataScatterplot = new DualDataScatterplot(
-        {parentElement: '#dual-data-scatterplot'},
+    dualDataScatterplot = new SankeyChart(
+        {parentElement: '#sankey-div'},
         dispatcher
     )
     smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots(
@@ -65,3 +67,19 @@ d3.csv('data/social-capital-usa-colleges.csv').then(data => {
 
     updateGraphs()
 })
+
+/**
+ * ==[ OTHER LOGIC ]====================================================================================================
+ */
+
+function setupDarkModeSwitch() {
+    d3.select('#dark-mode-switch')
+        .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
+        .on('click', () => {
+            isDarkMode = !isDarkMode
+            document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+            setupDarkModeSwitch()
+        })
+}
+
+setupDarkModeSwitch()

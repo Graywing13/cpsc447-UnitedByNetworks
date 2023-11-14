@@ -7,29 +7,35 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Add HTML content, SVG drawing area, ... -->
+    <!-- HTML content and SVG drawing area -->
+    <div id="header">
         <h1>Social Connectedness Across US Colleges</h1>
+        <button id="dark-mode-switch"></button>
+    </div>
     <div id="content">
         <div id="content-left">
-            <div id="dot-density-map"></div>
-            <div id="tbd"></div>
+            <div id="dot-density-map" class="svg-container"></div>
         </div>
         <div id="content-right">
-            <div id="dual-data-scatterplot">
+            <div id="sankey-div" class="svg-container">
                 <h2>Generational Biases</h2>
             </div>
-            <div id="small-multiples-scatterplots">
+            <div id="small-multiples-scatterplots" class="svg-container">
                 <h2>Controllable Factors vs. SES Increase</h2>
             </div>
         </div>
     </div>
+
+    <!-- Tooltips -->
+    <div id="help-text" class="tooltip"></div>
+    <div id="tooltip" class="tooltip"></div>
 
     <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
 
     <!-- Our JS code -->
     <script src="js/charts/dot-density-map.js"></script>
-    <script src="js/charts/dual-data-scatterplot.js"></script>
+    <script src="js/charts/sankey-chart.js"></script>
     <script src="js/charts/small-multiples-scatterplots.js"></script>
     <script src="js/main.js"></script>
 </body>
