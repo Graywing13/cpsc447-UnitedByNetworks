@@ -2,12 +2,14 @@
 
 :root {
     --white: #fff;
+    --light-gray: #f8f8f8;
     --black: #000;
     --hover-shadow: rgb(0 0 0 / 0.1);
 }
 
 [data-theme="dark"] {
     --white: #000;
+    --light-gray: #111;
     --black: #fff;
     --hover-shadow: rgb(255 255 255 / 0.1);
 }
@@ -55,7 +57,7 @@ body {
     min-width: 160px;
     max-width: 240px;
 
-    background: var(--white);
+    background: var(--light-gray);
     box-shadow: 2px 2px 5px 4px var(--hover-shadow);
     padding: 8px;
 
@@ -75,6 +77,7 @@ body {
 
 .axis-label {
     alignment-baseline: hanging;
+    fill: var(--black);
 }
 
 .end-label {
