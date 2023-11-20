@@ -171,7 +171,6 @@ class ScatterplotThree {
                 return value === "" ? 0 : parseFloat(value);
               });
             let correlationCoefficient = ss.sampleCorrelation(changeSesData, categoryDataEdited)
-            // console.log(correlationCoefficient)
 
             correlationCoefficients.set(category, correlationCoefficient)
         }) 
