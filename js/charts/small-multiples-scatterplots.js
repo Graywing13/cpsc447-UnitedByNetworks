@@ -2,13 +2,19 @@ class SmallMultiplesScatterplots {
     constructor(_config, dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 360,
-            containerHeight: _config.containerHeight || 240,
+            containerWidth: _config.containerWidth || 550,
+            containerHeight: _config.containerHeight || 450,
             margin: _config.margin || {
                 top: 20,
                 right: 20,
                 bottom: 20,
                 left: 20
+            },
+            submargin: _config.submargin || {
+                top: 10,
+                right: 10,
+                bottom: 10,
+                left: 10
             }
         }
         this.dispatcher = dispatcher;
@@ -22,51 +28,75 @@ class SmallMultiplesScatterplots {
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
+        // subcontainer drawing area config
+        vis.subwidth = vis.width - vis.config.submargin.left - vis.config.submargin.right;
+        vis.subheight = vis.height - vis.config.submargin.top - vis.config.submargin.bottom;
+
+        // Append the main SVG
         vis.svg = d3.select(vis.config.parentElement).append('svg')
             .attr('width', vis.config.containerWidth)
-            .attr('height', vis.config.containerHeight);
+            .attr('height', vis.config.containerHeight)
+            // .attr('style', 'background-color:purple');
 
-        // initialize axis
+        // Append a group for the entire chart
+        vis.chartGroup = vis.svg.append('g')
+            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+
+        // Append three nested SVG elements with different background colors
+        vis.svg1 = vis.chartGroup.append('rect')
+            .attr('width', vis.width)
+            .attr('height', vis.height / 3)
+            .attr('fill', '#FFD700');
+
+        vis.svg2 = vis.chartGroup.append('rect')
+            .attr('width', vis.width)
+            .attr('height', vis.height / 3)
+            .attr('y', vis.height / 3)
+            .attr('fill', '#C0C0C0');
+
+        vis.svg3 = vis.chartGroup.append('rect')
+            .attr('width', vis.width)
+            .attr('height', vis.height / 3)
+            .attr('y', 2 * (vis.height / 3))
+            .attr('fill', '#CD7F32');
+
+        // initialize axis for each subcontainer
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
             .domain([0, 2]);
 
         vis.yScale = d3.scaleLinear()
-            .range([vis.height, 0])
+            .range([vis.height / 3, 0])
             .domain([0, 2]);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
-            .tickSize(-vis.height - 10);
+            .tickSize(-vis.height / 3 - 10);
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(6)
             .tickSize(-vis.width - 10);
 
-        // append main container
-        vis.mainContainer = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
-
-        // append three sub-containers with padding
-        vis.subContainers = vis.mainContainer.selectAll('.sub-container')
+        // Append three sub-containers with padding
+        vis.subContainers = vis.chartGroup.selectAll('.sub-container')
             .data([0, 1, 2]) // data for three sub-containers
             .enter()
             .append('g')
             .attr('class', (d, index) => `sub-container sub-container-${index}`)
-            .attr('transform', (d, index) => `translate(${index * (vis.width + 10)}, 0)`)
-            .attr('style', 'background-color:red');
+            .attr('transform', (d, index) => `translate(0, ${index * (vis.height / 3)})`)
+            .attr('style', (d, index) => `background-color: ${index === 0 ? 'gold' : (index === 1 ? 'silver' : 'bronze')}`);
 
-        // group elements
-        vis.chart = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+        // Append x-axis for each sub-container
+        vis.subContainers.append('g')
+            .attr('class', (d, index) => `x-axis-${index}`)
+            .attr('transform', `translate(0,${vis.height / 3})`)
+            .call(vis.xAxis);
 
-        vis.xAxisG = vis.chart.append('g')
-            .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0,${vis.height})`);
-        
-        vis.yAxisG = vis.chart.append('g')
-            .attr('class', 'axis y-axis');
-        
+        // Append y-axis for each sub-container
+        vis.subContainers.append('g')
+            .attr('class', (d, index) => `y-axis-${index}`)
+            .call(vis.yAxis);
+            
         // axis titles
         // vis.chart.append('text')
         //     .attr('class', 'axis-title')
@@ -117,23 +147,23 @@ class SmallMultiplesScatterplots {
     renderVis() {
         let vis = this;
 
-        // draw gridlines
-        vis.xAxisG
-            .call(vis.xAxis)
-            .call(g => g.select('.domain').remove());
+        // // draw gridlines
+        // vis.xAxisG
+        //     .call(vis.xAxis)
+        //     .call(g => g.select('.domain').remove());
 
-        vis.yAxisG
-            .call(vis.yAxis)
-            .call(g => g.select('.domain').remove());
+        // vis.yAxisG
+        //     .call(vis.yAxis)
+        //     .call(g => g.select('.domain').remove());
 
-        // draw circles
-        const circles = vis.chart.selectAll('.point')
-                .data(vis.data, d => d.college_name)
-            .join('circle')
-                .attr('class', 'point')
-                .attr('r', 2)
-                .attr('cy', d => vis.yScale(vis.yValue(d)))
-                .attr('cx', d => vis.xScale(vis.xValue(d)));
+        // // draw circles
+        // const circles = vis.chart.selectAll('.point')
+        //         .data(vis.data, d => d.college_name)
+        //     .join('circle')
+        //         .attr('class', 'point')
+        //         .attr('r', 2)
+        //         .attr('cy', d => vis.yScale(vis.yValue(d)))
+        //         .attr('cx', d => vis.xScale(vis.xValue(d)));
 
     }
 
