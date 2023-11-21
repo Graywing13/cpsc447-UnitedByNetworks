@@ -1,3 +1,18 @@
+const PARENT_SES_NAME_PREFIX = 'Parent SES Q'
+const FRIENDING_BIAS_NAME_PREFIX = 'Friending Bias Q'
+const PARENT_SES_CATEGORY_PREFIX = 'parentSesQ'
+const FRIENDING_BIAS_CATEGORY_PREFIX = 'friendingBiasQ'
+const SANKEY_COLORS = {
+    parentSesQ4: '#feeb8a',
+    parentSesQ3: '#f89e72',
+    parentSesQ2: '#d54f6a',
+    parentSesQ1: '#751f8c',
+    friendingBiasQ4: '#334f24',
+    friendingBiasQ3: '#3f7524',
+    friendingBiasQ2: '#55af2a',
+    friendingBiasQ1: '#79FF37'
+}
+
 class SankeyChart {
     constructor(_config, dispatcher) {
         this.config = {
@@ -5,15 +20,31 @@ class SankeyChart {
             containerWidth: _config.containerWidth || 360,
             containerHeight: _config.containerHeight || 240,
             margin: _config.margin || {
-                top: 10,
-                right: 0,
+                top: 40,
+                right: 10,
                 bottom: 0,
-                left: 0
+                left: 10
             },
             tooltipPadding: _config.tooltipPadding || 15
         }
         this.dispatcher = dispatcher
         this.initVis()
+    }
+
+    // Helper fn to determine the text label of a quarter
+    getQuartileLabel(quartile) {
+        switch (quartile) {
+            case 1:
+                return 'Very low'
+            case 2:
+                return 'Low'
+            case 3:
+                return 'High'
+            case 4:
+                return 'Very high'
+            default:
+                return 'Error'
+        }
     }
 
     initVis() {
@@ -25,8 +56,6 @@ class SankeyChart {
         vis.svg = d3.select(vis.config.parentElement).append('svg')
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight)
-            // TODO delete, just to make it visible
-            .attr('style', 'background-color:beige')
 
         vis.chart = vis.svg.append('g')
             .attr('id', 'sankey-chart')
@@ -39,8 +68,8 @@ class SankeyChart {
         vis.leftAxisGroup = vis.chart.append('g')
             .attr('class', 'axis left-axis')
         vis.leftAxisLabel = vis.svg.append('text')
-            .attr('x', 20)
-            .attr('y', vis.config.margin.top)
+            .attr('x', 0)
+            .attr('y', vis.config.margin.top - 30)
             .attr('class', 'axis-label')
             .text('Parent SES')
 
@@ -51,9 +80,9 @@ class SankeyChart {
         vis.rightAxisGroup = vis.chart.append('g')
             .attr('class', 'axis right-axis')
         vis.rightAxisLabel = vis.svg.append('text')
-            .attr('x', vis.width - 20)
-            .attr('y', vis.config.margin.top)
-            .attr('class', 'axis-label hoverable end-label')
+            .attr('x', vis.config.containerWidth)
+            .attr('y', vis.config.margin.top - 30)
+            .attr('class', 'axis-label end-label')
             .text('Friending Bias ⓘ')
 
         // Add help text to Friending Bias
@@ -64,25 +93,94 @@ class SankeyChart {
                     .style('left', event.pageX + vis.config.tooltipPadding + 'px')
                     .style('top', event.pageY + vis.config.tooltipPadding + 'px')
                     .html(`
-                        <div class="tooltip-title">Friending Bias</div>
+                        <div class='tooltip-title'>Friending Bias</div>
                         <ul>
                             <li>The tendency for a student to be friends with other students who have a similar SES.</li>
                             <li>A higher bias means the student mainly has friends with similar socioeconomic backgrounds.</li>
                         </ul>
                     `)
             }).on('mouseleave', () => {
-                d3.select('#help-text').style('display', 'none')
-            })
+            d3.select('#help-text').style('display', 'none')
+        })
 
+        // Initiate sankey generator
+        vis.sankey = d3.sankey()
+            .nodeId(d => d.name)
+            .nodeWidth(15)
+            .nodePadding(10)
+            .extent([[1, 5], [vis.width - 1, vis.height - 5]])
+            .nodeSort(null)
+            .linkSort((a, b) => {
+                const sortingValueA = a.source.index * 10 + a.target.index
+                const sortingValueB = b.source.index * 10 + b.target.index
+                return sortingValueA - sortingValueB
+            })
     }
 
     updateVis() {
         let vis = this
 
-        // TODO
+        // Filter for data that contains both variables of interest
+        vis.data = vis.data.filter(d => d.ec_parent_ses_college_quartile && d.bias_own_ses_college_quartile)
 
-        // TODO delete placeholder
-        vis.dispatcher.call('placeholder', null, vis.config.parentElement)
+        // Separate filtered data into groups based on variables of interest
+        vis.groupedData = d3.flatRollup(
+            vis.data,
+            v => v.length,
+            d => d.ec_parent_ses_college_quartile,
+            d => d.bias_own_ses_college_quartile
+        ).map((outcome) => {
+            const [parentSesQuartile, friendingBiasQuartile, count] = outcome
+            return {
+                parentSesQuartile,
+                friendingBiasQuartile,
+                count
+            }
+        })
+
+        // Format node data
+        const parentSesNodes = d3.rollups(vis.groupedData, v => d3.sum(v, d => d.count), d => d.parentSesQuartile)
+            .sort(([quartileA], [quartileB]) => quartileB - quartileA)
+            .map(group => {
+                const parentSesQuartile = group[0]
+                return {
+                    name: `${PARENT_SES_NAME_PREFIX}${parentSesQuartile}`,
+                    category: `${PARENT_SES_CATEGORY_PREFIX}${parentSesQuartile}`,
+                    label: vis.getQuartileLabel(parentSesQuartile)
+                }
+            })
+        const friendingBiasNodes = d3.rollups(vis.groupedData, v => d3.sum(v, d => d.count), d => d.friendingBiasQuartile)
+            .sort(([quartileA], [quartileB]) => quartileB - quartileA)
+            .map(group => {
+                const friendingBiasQuartile = group[0]
+                return {
+                    name: `${FRIENDING_BIAS_NAME_PREFIX}${friendingBiasQuartile}`,
+                    category: `${FRIENDING_BIAS_CATEGORY_PREFIX}${friendingBiasQuartile}`,
+                    label: `${vis.getQuartileLabel(friendingBiasQuartile)} bias`
+                }
+            })
+        const processedNodes = ([
+            ...parentSesNodes,
+            ...friendingBiasNodes
+        ])
+
+        // Format link data
+        const processedLinks = vis.groupedData.map((group) => {
+            const {parentSesQuartile, friendingBiasQuartile, count} = group
+            return {
+                source: `${PARENT_SES_NAME_PREFIX}${parentSesQuartile}`,
+                target: `${FRIENDING_BIAS_NAME_PREFIX}${friendingBiasQuartile}`,
+                value: count
+            }
+        })
+
+        // Apply sankey generator to data
+        const {nodes: sankeyNodes, links: sankeyLinks} = vis.sankey({
+            nodes: processedNodes.map(d => Object.assign({}, d)),
+            links: processedLinks.map(d => Object.assign({}, d))
+        })
+        vis.sankeyNodes = sankeyNodes
+        vis.sankeyLinks = sankeyLinks
 
         vis.renderVis()
     }
@@ -90,6 +188,65 @@ class SankeyChart {
     renderVis() {
         let vis = this
 
-        // TODO
+        // Create node rects
+        vis.rectMarks = vis.chart.append('g')
+            .attr('stroke', 'none')
+            .selectAll()
+            .data(vis.sankeyNodes)
+            .join('rect')
+            .attr('x', d => d.x0)
+            .attr('y', d => d.y0)
+            .attr('height', d => d.y1 - d.y0)
+            .attr('width', d => d.x1 - d.x0)
+            .attr('fill', d => SANKEY_COLORS[d.category])
+
+        // Create links between nodes
+        vis.linkMarks = vis.chart.selectAll('.sankey-link')
+            .data(vis.sankeyLinks)
+            .join('g')
+            .attr('class', 'sankey-link clickable')
+
+        // Add link gradient (makes link visible)
+        vis.gradient = vis.linkMarks.append('linearGradient')
+            .attr('id', d => (d.uid = `link-gradient-${d.source.category}-${d.target.category}`))
+            .attr('gradientUnits', 'userSpaceOnUse')
+            .attr('x1', d => d.source.x1)
+            .attr('x2', d => d.target.x0)
+        vis.gradient.append('stop')
+            .attr('offset', '0%')
+            .attr('stop-color', d => SANKEY_COLORS[d.source.category])
+        vis.gradient.append('stop')
+            .attr('offset', '100%')
+            .attr('stop-color', d => SANKEY_COLORS[d.target.category])
+
+        // Add link path
+        vis.linkMarks.append('path')
+            .attr('d', d3.sankeyLinkHorizontal())
+            .attr('stroke', (d) => `url(#${d.uid})`)
+            .attr('stroke-width', d => Math.max(1, d.width))
+            .on('click', (event, d) => {
+                const data = {
+                    parentSesQuartile: +d.source.name.slice(-1),
+                    friendingBiasQuartile: +d.target.name.slice(-1)
+                }
+                debugger
+                vis.dispatcher.call('sankeyLinkSelected', null, data)
+            })
+
+        // Add node labels
+        vis.chart.selectAll('.sankey-node-label')
+            .data(vis.sankeyNodes)
+            .join('text')
+            .attr('class', 'sankey-node-label')
+            .attr('x', d => d.x0 < vis.width / 2 ? d.x1 + 6 : d.x0 - 6)
+            .attr('y', d => (d.y1 + d.y0) / 2)
+            .attr('dy', '0.35em')
+            .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'start' : 'end')
+            .text(d => d.label)
+            .raise()
+
+        // Add tooltip-type label to nodes and links
+        vis.rectMarks.append('title').text(d => `${d.name}`)
+        vis.linkMarks.append('title').text(d => `${d.source.name} → ${d.target.name}`)
     }
 }

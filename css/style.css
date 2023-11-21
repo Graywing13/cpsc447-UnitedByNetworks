@@ -46,10 +46,6 @@ body {
 
 /* ==[ tooltips ]==================================================================================================== */
 
-.hoverable {
-    cursor: pointer;
-}
-
 .tooltip {
     z-index: 10;
     position: absolute;
@@ -84,7 +80,25 @@ body {
     text-anchor: end;
 }
 
-/* ==[ generational biases ]========================================================================================= */
+.clickable {
+    cursor: pointer;
+}
+
+/* ==[ sankey chart ]========================================================================================= */
+
+.sankey-link {
+    fill: none;
+    stroke-opacity: 0.5;
+}
+
+.sankey-link:hover {
+    stroke-opacity: 0.9;
+}
+
+.sankey-node-label {
+    pointer-events: none;
+    fill: var(--black);
+}
 
 /* ==[ dark mode toggle ]============================================================================================ */
 

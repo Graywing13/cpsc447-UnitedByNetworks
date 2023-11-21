@@ -1,7 +1,7 @@
 let allData;
-let dotDensityMap, dualDataScatterplot, smallMultiplesScatterplotsWrapper
+let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
 
-const dispatcher = d3.dispatch('placeholder')
+const dispatcher = d3.dispatch('placeholder', 'sankeyLinkSelected')
 
 let isDarkMode = false
 
@@ -15,8 +15,8 @@ function updateGraphs() {
     dotDensityMap.data = filteredData
     dotDensityMap.updateVis()
 
-    dualDataScatterplot.data = filteredData
-    dualDataScatterplot.updateVis()
+    sankeyChart.data = filteredData
+    sankeyChart.updateVis()
 
     smallMultiplesScatterplotsWrapper.data = filteredData
     smallMultiplesScatterplotsWrapper.updateVis()
@@ -29,6 +29,12 @@ function updateGraphs() {
 dispatcher.on('placeholder', str => {
     console.log(`${str} called dispatch`)
 })
+
+dispatcher.on('sankeyLinkSelected', data => {
+        const {parentSesQuartile, friendingBiasQuartile} = data
+        alert(`main.js will filter for:\n- Parent SES Q${parentSesQuartile} \n- Friending Bias Q${friendingBiasQuartile}`)
+    }
+)
 
 /**
  * ==[ LOAD DATA ]======================================================================================================
@@ -55,10 +61,9 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
         })
     })
     allData = data
-    console.log(allData[0])
 
     dotDensityMap = new DotDensityMap({parentElement: '#dot-density-map'}, dispatcher)
-    dualDataScatterplot = new SankeyChart(
+    sankeyChart = new SankeyChart(
         {parentElement: '#sankey-div'},
         dispatcher
     )
