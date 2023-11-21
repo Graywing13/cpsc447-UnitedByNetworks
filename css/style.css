@@ -1,4 +1,8 @@
 /* ==[ index.html ]================================================================================================== */
+* {
+    font-family: sans-serif;
+}
+
 body {
     text-align: center;
 }
@@ -15,4 +19,13 @@ body {
     align-items: center;
 }
 
-/* ==[ generational biases scatterplot ]============================================================================= */
+/* ==[ small multiples scatterplot ]============================================================================= */
+
+.right-margin-text {
+    font-size: small;
+}
+
+.axis-title {
+    font-size: 11px;
+}
+
