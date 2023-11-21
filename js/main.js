@@ -1,23 +1,23 @@
-let allData;
-let dotDensityMap, dualDataScatterplot, smallMultiplesScatterplotsWrapper;
+let allData
+let dotDensityMap, dualDataScatterplot, smallMultiplesScatterplotsWrapper
 
-const dispatcher = d3.dispatch('placeholder');
+const dispatcher = d3.dispatch('placeholder')
 
 /**
  * ==[ HELPERS ]========================================================================================================
  */
 // Update all graphs with new data / new filter change
 function updateGraphs() {
-    const filteredData = allData; // TODO edit as needed
+    const filteredData = allData // TODO edit as needed
 
-    dotDensityMap.data = filteredData;
-    dotDensityMap.updateVis();
+    dotDensityMap.data = filteredData
+    dotDensityMap.updateVis()
 
-    dualDataScatterplot.data = filteredData;
-    dualDataScatterplot.updateVis();
+    dualDataScatterplot.data = filteredData
+    dualDataScatterplot.updateVis()
 
-    smallMultiplesScatterplotsWrapper.data = filteredData;
-    smallMultiplesScatterplotsWrapper.updateVis();
+    smallMultiplesScatterplotsWrapper.data = filteredData
+    smallMultiplesScatterplotsWrapper.updateVis()
 }
 
 /**
@@ -25,7 +25,7 @@ function updateGraphs() {
  */
 // TODO delete placeholder
 dispatcher.on('placeholder', (str, element) => {
-    console.log(`${str} called dispatch for ${element}`);
+    console.log(`${str} called dispatch for ${element}`)
 })
 
 /**
@@ -59,24 +59,24 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
 
     // Load US State Boundaries data
     d3.json('data/us-state-boundaries.geojson').then(function (us) {
-        const stateBorders = us.features;
+        const stateBorders = us.features
 
         // Initialize Dot Density Map
         dotDensityMap = new DotDensityMap({
             parentElement: '#dot-density-map',
             stateBorders: stateBorders
-        }, dispatcher);
+        }, dispatcher)
 
         // Initialize Dual Data Scatterplot
         dualDataScatterplot = new DualDataScatterplot({
             parentElement: '#dual-data-scatterplot'
-        }, dispatcher);
+        }, dispatcher)
         
          // Initialize Small Multiples Scatterplots 
         smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
             parentElement: '#small-multiples-scatterplots'
-        }, dispatcher);
+        }, dispatcher)
 
-        updateGraphs();
-    });
-});
+        updateGraphs()
+    })
+})
