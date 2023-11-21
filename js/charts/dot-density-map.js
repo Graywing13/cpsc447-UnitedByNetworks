@@ -13,6 +13,7 @@ class DotDensityMap {
         }
         this.dispatcher = dispatcher
         this.stateBorders = _config.stateBorders
+        this.collegeData = _config.collegeData
         this.initVis()
     }
 
@@ -53,8 +54,20 @@ class DotDensityMap {
             .data(vis.stateBorders)
             .enter().append('path')
             .attr('d', path)
-            .attr('stroke', '#000') 
-            .attr('stroke-width', 1) 
+            .attr('stroke', '#000')
+            .attr('stroke-width', 1)
             .attr('fill', '#fff')
+
+        // Bind data and create a group for each college
+        const collegeGroups = vis.svg.selectAll('.college')
+            .data(vis.collegeData) 
+            .enter().append('g')
+            .attr('class', 'college')
+            .attr('transform', d => `translate(${projection([d.lon, d.lat])})`)
+
+        // Append a circle for each college within its group
+        collegeGroups.append('circle')
+            .attr('r', 2) 
+            .attr('fill', 'blue')
     }
 }

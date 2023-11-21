@@ -8,7 +8,7 @@ const dispatcher = d3.dispatch('placeholder')
  */
 // Update all graphs with new data / new filter change
 function updateGraphs() {
-    const filteredData = allData // TODO edit as needed
+    const filteredData = allData 
 
     dotDensityMap.data = filteredData
     dotDensityMap.updateVis()
@@ -64,7 +64,8 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
         // Initialize Dot Density Map
         dotDensityMap = new DotDensityMap({
             parentElement: '#dot-density-map',
-            stateBorders: stateBorders
+            stateBorders: stateBorders,
+            collegeData: allData
         }, dispatcher)
 
         // Initialize Dual Data Scatterplot
