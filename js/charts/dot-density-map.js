@@ -6,7 +6,7 @@ class DotDensityMap {
             containerHeight: _config.containerHeight || 600,
             margin: _config.margin || {
                 top: 30,
-                right: 150, // Increased right margin to accommodate the second label
+                right: 150, 
                 bottom: 100,
                 left: -120
             }
@@ -39,8 +39,8 @@ class DotDensityMap {
         // Add "low" label on the left
         vis.svg.append('text')
             .attr('class', 'label')
-            .attr('x', vis.width / 2 + 210) // Adjust the x value as needed
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('x', vis.width / 2 + 210) 
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) 
             .attr('text-anchor', 'end')
             .attr('fill', 'black')
             .style('font-weight', 'bold')
@@ -49,8 +49,8 @@ class DotDensityMap {
         // Add "high" label on the right
         vis.svg.append('text')
             .attr('class', 'label')
-            .attr('x', vis.width / 2 - 40) // Adjust the x value as needed
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('x', vis.width / 2 - 40)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) 
             .attr('text-anchor', 'start')
             .attr('fill', 'black')
             .style('font-weight', 'bold')
@@ -59,8 +59,8 @@ class DotDensityMap {
         // Add "low" label on the left
         vis.svg.append('text')
             .attr('class', 'label')
-            .attr('x', vis.width / 2 + 120) // Adjust the x value as needed
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('x', vis.width / 2 + 120)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) 
             .attr('text-anchor', 'end')
             .attr('fill', 'black')
             .style('font-weight', 'bold')
@@ -69,23 +69,23 @@ class DotDensityMap {
         // Add "high" label on the right
         vis.svg.append('text')
             .attr('class', 'label')
-            .attr('x', vis.width / 2 + 315) // Adjust the x value as needed
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('x', vis.width / 2 + 315) 
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) 
             .attr('text-anchor', 'start')
             .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('high');
 
         // Add circles under the "Amount of inter-SES friends" label
-        const circleData = [0.8, 1.8, 2.8, 3.8, 4.8]; // You can adjust the number of circles or their sizes as needed
+        const circleData = [0.8, 1.8, 2.8, 3.8, 4.8]; 
 
         vis.svg.selectAll('.circle')
             .data(circleData)
             .enter().append('circle')
             .attr('class', 'circle')
-            .attr('cx', (d, i) => vis.width / 2 - 30 + i * 30) // Increase the spacing between circles
-            .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 60) // Adjust the y-coordinate as needed
-            .attr('r', d => d * 2) // Adjust the radius as needed
+            .attr('cx', (d, i) => vis.width / 2 - 30 + i * 30) 
+            .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 60) 
+            .attr('r', d => d * 2) 
             .attr('fill', 'orangered');
 
 
@@ -107,16 +107,16 @@ class DotDensityMap {
             .style('stop-color', 'yellow');
 
         vis.svg.append('rect')
-            .attr('x', vis.width / 2 + 187) // Adjust the positioning of the color bar
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 55) // Adjust the positioning of the color bar
-            .attr('width', 150) // Adjust the width of the color bar
-            .attr('height', 15) // Adjust the height of the color bar
+            .attr('x', vis.width / 2 + 187) 
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 55) 
+            .attr('width', 150) 
+            .attr('height', 15) 
             .style('fill', 'url(#color-gradient)');
 
         // Add a label to the right
         vis.svg.append('text')
             .attr('class', 'label')
-            .attr('x', vis.width / 2 + vis.config.margin.right + 120) // Adjust the x value as needed
+            .attr('x', vis.width / 2 + vis.config.margin.right + 120) 
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
             .attr('text-anchor', 'middle')
             .attr('fill', 'orangered')
