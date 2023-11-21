@@ -5,10 +5,10 @@ class DotDensityMap {
             containerWidth: _config.containerWidth || 800,
             containerHeight: _config.containerHeight || 600,
             margin: _config.margin || {
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0
+                top: 30,
+                right: 150, // Increased right margin to accommodate the second label
+                bottom: 100,
+                left: -120
             }
         }
         this.dispatcher = dispatcher
@@ -26,6 +26,101 @@ class DotDensityMap {
         vis.svg = d3.select(vis.config.parentElement).append('svg')
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight)
+
+        // Add a label at the bottom
+        vis.svg.append('text')
+            .attr('class', 'label')
+            .attr('x', vis.width / 2 + vis.config.margin.right - 100)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'orangered')
+            .text('Amount of inter-SES friends');
+
+        // Add "low" label on the left
+        vis.svg.append('text')
+            .attr('class', 'label')
+            .attr('x', vis.width / 2 + 210) // Adjust the x value as needed
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('text-anchor', 'end')
+            .attr('fill', 'black')
+            .style('font-weight', 'bold')
+            .text('low');
+
+        // Add "high" label on the right
+        vis.svg.append('text')
+            .attr('class', 'label')
+            .attr('x', vis.width / 2 - 40) // Adjust the x value as needed
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('text-anchor', 'start')
+            .attr('fill', 'black')
+            .style('font-weight', 'bold')
+            .text('low');
+
+        // Add "low" label on the left
+        vis.svg.append('text')
+            .attr('class', 'label')
+            .attr('x', vis.width / 2 + 120) // Adjust the x value as needed
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('text-anchor', 'end')
+            .attr('fill', 'black')
+            .style('font-weight', 'bold')
+            .text('high');
+
+        // Add "high" label on the right
+        vis.svg.append('text')
+            .attr('class', 'label')
+            .attr('x', vis.width / 2 + 315) // Adjust the x value as needed
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82) // Adjust the y value as needed
+            .attr('text-anchor', 'start')
+            .attr('fill', 'black')
+            .style('font-weight', 'bold')
+            .text('high');
+
+        // Add circles under the "Amount of inter-SES friends" label
+        const circleData = [0.8, 1.8, 2.8, 3.8, 4.8]; // You can adjust the number of circles or their sizes as needed
+
+        vis.svg.selectAll('.circle')
+            .data(circleData)
+            .enter().append('circle')
+            .attr('class', 'circle')
+            .attr('cx', (d, i) => vis.width / 2 - 30 + i * 30) // Increase the spacing between circles
+            .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 60) // Adjust the y-coordinate as needed
+            .attr('r', d => d * 2) // Adjust the radius as needed
+            .attr('fill', 'orangered');
+
+
+        // Add a color gradient bar
+        const gradient = vis.svg.append('defs')
+            .append('linearGradient')
+            .attr('id', 'color-gradient')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '100%')
+            .attr('y2', '0%');
+
+        gradient.append('stop')
+            .attr('offset', '0%')
+            .style('stop-color', 'purple');
+
+        gradient.append('stop')
+            .attr('offset', '100%')
+            .style('stop-color', 'yellow');
+
+        vis.svg.append('rect')
+            .attr('x', vis.width / 2 + 187) // Adjust the positioning of the color bar
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 55) // Adjust the positioning of the color bar
+            .attr('width', 150) // Adjust the width of the color bar
+            .attr('height', 15) // Adjust the height of the color bar
+            .style('fill', 'url(#color-gradient)');
+
+        // Add a label to the right
+        vis.svg.append('text')
+            .attr('class', 'label')
+            .attr('x', vis.width / 2 + vis.config.margin.right + 120) // Adjust the x value as needed
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
+            .attr('text-anchor', 'middle')
+            .attr('fill', 'orangered')
+            .text('Amount of mutual friends');
 
         // Call the update function to render the map
         vis.updateVis()
@@ -60,14 +155,14 @@ class DotDensityMap {
 
         // Bind data and create a group for each college
         const collegeGroups = vis.svg.selectAll('.college')
-            .data(vis.collegeData) 
+            .data(vis.collegeData)
             .enter().append('g')
             .attr('class', 'college')
-            .attr('transform', d => `translate(${projection([d.lon, d.lat])})`)
+            .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] + 10})`)
 
         // Append a circle for each college within its group
         collegeGroups.append('circle')
-            .attr('r', 2) 
+            .attr('r', 2)
             .attr('fill', 'blue')
     }
 }
