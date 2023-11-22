@@ -2,6 +2,7 @@
 
 Notes
 - This is meant for a screen size of at least 1600x900, otherwise tooltips may be cut off.
+- Zoom may need to be reduced to ~75% to display all content
 
 Resources
 - Dark mode switcher: https://dev.to/ananyaneogi/create-a-dark-light-mode-switch-with-css-variables-34l8
