@@ -62,7 +62,7 @@ class ScatterplotOne {
         // calculate correlation data
         vis.correlationData =  this.calculatePearsonCorrelation(vis.data);
         vis.topThreeCategories = this.getTopThreeCategories(vis.correlationData);
-        // console.log(correlationData)
+        console.log(vis.correlationData)
         // console.log(topThreeCategories)
 
         // y dynamic get and set
@@ -150,7 +150,6 @@ class ScatterplotOne {
 
     calculatePearsonCorrelation(data) {
         let correlationCoefficients = new Map();
-        let changeSesData = data.map(d => d.change_ses);
         let categoriesOfInterest = [
             'mean_students_per_cohort',
             'ec_high_parent_ses_college',
@@ -165,13 +164,13 @@ class ScatterplotOne {
             'volunteering_rate_college'
         ];
 
+        // For every category, filter for ones that have valid data, then calculate correlation coefficient
         categoriesOfInterest.forEach((category) => {
-            let categoryData = data.map(d => d[category]);
-            let categoryDataEdited = categoryData.map((value) => {
-                return value === "" ? 0 : parseFloat(value);
-              });
-            let correlationCoefficient = ss.sampleCorrelation(changeSesData, categoryDataEdited)
-            // console.log(correlationCoefficient)
+            const dataFiltered = data.filter((d) => d.change_ses !== '' && d[category] !== '');
+            const changeSesData = dataFiltered.map(d => d.change_ses)
+            const categoryData = dataFiltered.map(d => d[category])
+            
+            const correlationCoefficient = ss.sampleCorrelation(changeSesData, categoryData)
 
             correlationCoefficients.set(category, correlationCoefficient)
         }) 

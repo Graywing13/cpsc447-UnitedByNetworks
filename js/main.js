@@ -31,8 +31,11 @@ dispatcher.on('placeholder', str => {
 /**
  * ==[ LOAD DATA ]======================================================================================================
  */
+// TODO some of these variables may not be needed
 const numericalAttributes = [
     'mean_students_per_cohort',
+    'ec_own_ses_college,',
+    'ec_parent_ses_college',
     'ec_high_parent_ses_college',
     'exposure_own_ses_college',
     'exposure_parent_ses_college',
@@ -52,7 +55,7 @@ const numericalAttributes = [
 d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     data.forEach(d => {
         numericalAttributes.forEach((numAttr) => {
-            if (d[numAttr]) d[numAttr] = +d[numAttr]
+            if (d[numAttr] !== '') d[numAttr] = +d[numAttr]
         })
     })
     allData = data
