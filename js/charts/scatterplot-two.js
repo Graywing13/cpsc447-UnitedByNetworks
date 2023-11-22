@@ -35,7 +35,7 @@ class ScatterplotTwo {
         vis.yScale = d3.scaleLinear()
             .range([vis.height, 0])
             .domain([-2, 2]);
-            
+
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
             .tickSize(-vis.height - 10);
@@ -52,10 +52,10 @@ class ScatterplotTwo {
         vis.xAxisG = vis.chart.append('g')
             .attr('class', 'axis x-axis')
             .attr('transform', `translate(0,${vis.height})`);
-        
+
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
-        
+
         // axis titles
         // vis.chart.append('text')
         //     .attr('class', 'axis-title')
@@ -77,7 +77,7 @@ class ScatterplotTwo {
         let vis = this;
 
         // calculate correlation data
-        vis.correlationData =  this.calculatePearsonCorrelation(vis.data);
+        vis.correlationData = this.calculatePearsonCorrelation(vis.data);
         vis.topThreeCategories = this.getTopThreeCategories(vis.correlationData);
 
         // y dynamic get and set
@@ -123,43 +123,58 @@ class ScatterplotTwo {
             .call(g => g.select('.domain').remove());
 
         // draw circles
+        const category = vis.topThreeCategories[0]
+        const circlesData = vis.data.filter((d) => d.change_ses !== '' && d[category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes)
         const circles = vis.chart.selectAll('.point')
-                .data(vis.data, d => d.college_name)
+            .data(circlesData, d => d.college_name)
             .join('circle')
-                .attr('class', 'point')
-                .attr('r', 2)
-                .attr('cy', d => vis.yScale(vis.yValue(d)))
-                .attr('cx', d => vis.xScale(vis.xValue(d)));
+            .attr('class', 'point')
+            .attr('r', 2)
+            .attr('cy', d => vis.yScale(vis.yValue(d)))
+            .attr('cx', d => vis.xScale(vis.xValue(d)));
 
         vis.svg.append('text')
             .attr('class', 'right-margin-text')
             .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
-            .attr('y', 20) 
+            .attr('y', 20)
             .attr('dy', '.71em')
             .style('font-weight', 'bold')
             .text('2nd Most Correlated:');
 
-        vis.svg.append('text')
-            .attr('class', 'right-margin-text')
-            .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
-            .attr('y', 50) 
-            .attr('dy', '.71em')
-            .style('font-style', 'italic')
-            .text(vis.topThreeCategories[1]);  
-    
-        vis.svg.append('text')
-            .attr('class', 'right-margin-text')
-            .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
-            .attr('y', 70) 
-            .attr('dy', '.71em')
-            .text('Description Placeholder');
+        vis.chart.selectAll('.most-correlated')
+            .data([vis.topThreeCategories[0]])
+            .join(
+                enter => enter.append("text")
+                    .attr('class', 'right-margin-text most-correlated')
+                    .attr('x', vis.config.containerWidth - vis.config.margin.right)
+                    .attr('y', 30)
+                    .attr('dy', '.71em')
+                    .style('font-style', 'italic')
+                    .text(vis.topThreeCategories[0]),
+                update => update.text(vis.topThreeCategories[1])
+            )
 
         vis.svg.append('text')
             .attr('class', 'right-margin-text')
             .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
-            .attr('y', 90) 
+            .attr('y', 70)
             .attr('dy', '.71em')
-            .text(`Pearson's Correlation: ${vis.correlationData.get(vis.topThreeCategories[1]).toFixed(2)}`);            
+            .text('Description Placeholder');
+
+        const correlation = vis.correlationData.get(vis.topThreeCategories[1]).toFixed(3)
+
+        vis.chart.selectAll('.correlation')
+            .data([correlation])
+            .join(
+                enter => enter.append("text")
+                    .attr('class', 'right-margin-text correlation')
+                    .attr('x', vis.config.containerWidth - vis.config.margin.right)
+                    .attr('y', 70)
+                    .attr('dy', '.71em')
+                    .style('font-style', 'italic')
+                    .text(`Pearson's Correlation: ${correlation}`),
+                update => update.text(`Pearson's Correlation: ${correlation}`)
+            )
 
         // // Add foreignObject to the right margin
         // const foreignObject = vis.svg.append('foreignObject')
@@ -187,6 +202,7 @@ class ScatterplotTwo {
     }
 
     calculatePearsonCorrelation(data) {
+        let vis = this
         let correlationCoefficients = new Map();
         let categoriesOfInterest = [
             'mean_students_per_cohort',
@@ -204,14 +220,14 @@ class ScatterplotTwo {
 
         // For every category, filter for valid data, then calculate correlation coefficient
         categoriesOfInterest.forEach((category) => {
-            const dataFiltered = data.filter((d) => d.change_ses !== '' && d[category] !== '');
+            const dataFiltered = data.filter((d) => d.change_ses !== '' && d[category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes);
             const changeSesData = dataFiltered.map(d => d.change_ses)
             const categoryData = dataFiltered.map(d => d[category])
-            
+
             const correlationCoefficient = ss.sampleCorrelation(changeSesData, categoryData)
 
             correlationCoefficients.set(category, correlationCoefficient)
-        }) 
+        })
 
         return correlationCoefficients;
     }

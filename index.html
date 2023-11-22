@@ -3,50 +3,60 @@
 <head>
     <title>Social Connectedness Across US Colleges</title>
     <meta charset="UTF-8">
-    <link rel="icon" href="data:;base64,iVBORwOKGO=" />
+    <link rel="icon" href="data:;base64,iVBORwOKGO="/>
     <link rel="stylesheet" href="css/style.css">
     <!-- Included packages -->
     <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.1.0/dist/simple-statistics.min.js"></script>
 </head>
 <body>
-    <!-- HTML content and SVG drawing area -->
-    <div id="header">
-        <h1>Social Connectedness Across US Colleges</h1>
-        <button id="dark-mode-switch"></button>
+<!-- HTML content and SVG drawing area -->
+<div id="header">
+    <h1>Social Connectedness Across US Colleges</h1>
+    <button id="dark-mode-switch"></button>
+</div>
+<div id="content">
+    <div id="content-left">
+        <div id="dot-density-map" class="svg-container"></div>
     </div>
-    <div id="content">
-        <div id="content-left">
-            <div id="dot-density-map" class="svg-container"></div>
+    <div id="content-right">
+        <div id="sankey-div" class="svg-container">
+            <h2>Generational Biases</h2>
         </div>
-        <div id="content-right">
-            <div id="sankey-div" class="svg-container">
-                <h2>Generational Biases</h2>
-            </div>
-            <div id="small-multiples-scatterplots" class="svg-container">
-                <h2>Controllable Factors vs. SES Increase</h2>
-                <div id="scatterplot-one"></div>
-                <div id="scatterplot-two"></div>
-                <div id="scatterplot-three"></div>
-            </div>
+        <div id="small-multiples-scatterplots" class="svg-container">
+            <h2>Controllable Factors vs. SES Increase</h2>
+            <div id="scatterplot-one"></div>
+            <div id="scatterplot-two"></div>
+            <div id="scatterplot-three"></div>
+            <input
+                type="range"
+                id="parent-ses-slider"
+                name="volume"
+                min="0.35"
+                max="1.74"
+                step="0.01"
+                value="1.74"
+            />
+            <label for="parent-ses-slider">Family SES (based on parents)</label>
         </div>
     </div>
+</div>
 
-    <!-- Tooltips -->
-    <div id="help-text" class="tooltip"></div>
-    <div id="tooltip" class="tooltip"></div>
+<!-- Tooltips -->
+<div id="help-text" class="tooltip"></div>
+<div id="tooltip" class="tooltip"></div>
 
-    <!-- D3 bundles -->
-    <script src="js/d3.v6.min.js"></script>
-    <script src="js/d3-sankey.min.js"></script>
-    <script src="js/d3-array.min.js"></script>
+<!-- D3 bundles -->
+<script src="js/d3.v6.min.js"></script>
+<script src="js/d3-sankey.min.js"></script>
+<script src="js/d3-array.min.js"></script>
 
-    <!-- Our JS code -->
-    <script src="js/charts/dot-density-map.js"></script>
-    <script src="js/charts/sankey-chart.js"></script>
-    <script src="js/charts/small-multiples-scatterplots.js"></script>
-    <script src="js/charts/scatterplot-one.js"></script>
-    <script src="js/charts/scatterplot-two.js"></script>
-    <script src="js/charts/scatterplot-three.js"></script>
-    <script src="js/main.js"></script>
+<!-- Our JS code -->
+<script src="js/charts/dot-density-map.js"></script>
+<script src="js/charts/sankey-chart.js"></script>
+<script src="js/charts/small-multiples-scatterplots.js"></script>
+<script src="js/charts/scatterplot-one.js"></script>
+<script src="js/charts/scatterplot-two.js"></script>
+<script src="js/charts/scatterplot-three.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
