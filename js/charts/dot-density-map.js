@@ -76,19 +76,6 @@ class DotDensityMap {
             .style('font-weight', 'bold')
             .text('high');
 
-        // Add circles under the "Amount of inter-SES friends" label
-        const circleData = [0.8, 1.8, 2.8, 3.8, 4.8];
-
-        vis.svg.selectAll('.circle')
-            .data(circleData)
-            .enter().append('circle')
-            .attr('class', 'circle')
-            .attr('cx', (d, i) => vis.width / 2 - 30 + i * 30)
-            .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 60)
-            .attr('r', d => d * 2)
-            .attr('fill', 'orangered');
-
-
         // Add a color gradient bar
         const gradient = vis.svg.append('defs')
             .append('linearGradient')
@@ -160,9 +147,30 @@ class DotDensityMap {
             .attr('class', 'college')
             .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] + 10})`)
 
+        const colourScale = d3.scaleLinear()
+            .domain([0.099, 0.82]) // Range of clustering_college values
+            .range(['purple', 'yellow']); // Corresponding colors in the gradient
+
+        // Add circles under the "Amount of inter-SES friends" label
+        const circleData = [0.8, 1.8, 2.8, 3.8, 4.8];
+
+        vis.svg.selectAll('.circle')
+            .data(circleData)
+            .enter().append('circle')
+            .attr('class', 'circle')
+            .attr('cx', (d, i) => vis.width / 2 - 30 + i * 30)
+            .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 60)
+            .attr('r', d => d * 2)
+            .attr('fill', 'orangered');
+
+        // Create a scale for mapping bias_own_ses_college values to circle radius
+        const radiusScale = d3.scaleLinear()
+            .domain([-0.16, 0.38])
+            .range([1, 10]);
+
         // Append a circle for each college within its group
         collegeGroups.append('circle')
-            .attr('r', 2)
-            .attr('fill', 'blue')
+            .attr('r', d => radiusScale(d.bias_own_ses_college))
+            .attr('fill', d => colourScale(d.clustering_college || 0));
     }
 }
