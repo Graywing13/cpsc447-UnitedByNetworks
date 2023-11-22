@@ -1,7 +1,9 @@
 let allData;
-let dotDensityMap, dualDataScatterplot, smallMultiplesScatterplotsWrapper
+let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
 
-const dispatcher = d3.dispatch('placeholder')
+const dispatcher = d3.dispatch('placeholder', 'sankeyLinkSelected')
+
+let isDarkMode = false
 
 /**
  * ==[ HELPERS ]========================================================================================================
@@ -13,8 +15,8 @@ function updateGraphs() {
     dotDensityMap.data = filteredData
     dotDensityMap.updateVis()
 
-    dualDataScatterplot.data = filteredData
-    dualDataScatterplot.updateVis()
+    sankeyChart.data = filteredData
+    sankeyChart.updateVis()
 
     smallMultiplesScatterplotsWrapper.data = filteredData
     smallMultiplesScatterplotsWrapper.updateVis()
@@ -28,11 +30,20 @@ dispatcher.on('placeholder', str => {
     console.log(`${str} called dispatch`)
 })
 
+dispatcher.on('sankeyLinkSelected', data => {
+        const {parentSesQuartile, friendingBiasQuartile} = data
+        alert(`main.js will filter for:\n- Parent SES Q${parentSesQuartile} \n- Friending Bias Q${friendingBiasQuartile}`)
+    }
+)
+
 /**
  * ==[ LOAD DATA ]======================================================================================================
  */
+// TODO some of these variables may not be needed
 const numericalAttributes = [
     'mean_students_per_cohort',
+    'ec_own_ses_college,',
+    'ec_parent_ses_college',
     'ec_high_parent_ses_college',
     'exposure_own_ses_college',
     'exposure_parent_ses_college',
@@ -45,28 +56,56 @@ const numericalAttributes = [
     'volunteering_rate_college',
     'ec_parent_ses_college_quartile',
     'bias_own_ses_college_quartile',
+    'lat',
+    'lon',
     'change_ses'
 ]
 d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     data.forEach(d => {
         numericalAttributes.forEach((numAttr) => {
-            if (d[numAttr]) d[numAttr] = +d[numAttr]
+            if (d[numAttr] !== '') d[numAttr] = +d[numAttr]
         })
     })
     allData = data
-    console.log(allData[0])
+    
+    // Load US State Boundaries data
+    d3.json('data/us-state-boundaries.geojson').then(function (us) {
+        const stateBorders = us.features
 
-    dotDensityMap = new DotDensityMap({parentElement: '#dot-density-map'}, dispatcher)
-    dualDataScatterplot = new DualDataScatterplot(
-        {parentElement: '#dual-data-scatterplot'},
+        // Initialize Dot Density Map
+        dotDensityMap = new DotDensityMap({
+            parentElement: '#dot-density-map',
+            stateBorders: stateBorders,
+            collegeData: allData
+        }, dispatcher)
+
+        // Initialize Sankey
+        sankeyChart = new SankeyChart(
+        {parentElement: '#sankey-div'},
         dispatcher
     )
-    smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots(
-        {parentElement: '#small-multiples-scatterplots'},
-        dispatcher
-    )
+        
+         // Initialize Small Multiples Scatterplots 
+        smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
+            parentElement: '#small-multiples-scatterplots'
+        }, dispatcher)
 
-    console.log('hi')
-
-    updateGraphs()
+        updateGraphs()
+    })
 })
+
+/**
+ * ==[ OTHER LOGIC ]====================================================================================================
+ */
+
+function setupDarkModeSwitch() {
+    d3.select('#dark-mode-switch')
+        .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
+        .on('click', () => {
+            isDarkMode = !isDarkMode
+            document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+            setupDarkModeSwitch()
+        })
+}
+
+setupDarkModeSwitch()

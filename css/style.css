@@ -1,3 +1,19 @@
+/* ==[ colors ]====================================================================================================== */
+
+:root {
+    --white: #fff;
+    --light-gray: #f8f8f8;
+    --black: #000;
+    --hover-shadow: rgb(0 0 0 / 0.1);
+}
+
+[data-theme="dark"] {
+    --white: #000;
+    --light-gray: #111;
+    --black: #fff;
+    --hover-shadow: rgb(255 255 255 / 0.1);
+}
+
 /* ==[ index.html ]================================================================================================== */
 * {
     font-family: sans-serif;
@@ -5,18 +21,91 @@
 
 body {
     text-align: center;
+    background-color: var(--white);
+    color: var(--black);
+}
+
+#header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #content {
     display: flex;
     width: 100%;
+    gap: 16px;
     justify-content: center;
-    gap: 48px;
+    box-sizing: border-box;
 }
 
 #content-left {
     display: flex;
     align-items: center;
+}
+
+.svg-container {
+    padding: 16px;
+}
+
+/* ==[ tooltips ]==================================================================================================== */
+
+.tooltip {
+    z-index: 10;
+    position: absolute;
+    display: none;
+    min-width: 160px;
+    max-width: 240px;
+
+    background: var(--light-gray);
+    box-shadow: 2px 2px 5px 4px var(--hover-shadow);
+    padding: 8px;
+
+    border-radius: 4px;
+
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.tooltip-title {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* ==[ shared ]====================================================================================================== */
+
+.axis-label {
+    alignment-baseline: hanging;
+    fill: var(--black);
+}
+
+.end-label {
+    text-anchor: end;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.black-color {
+    color: black;
+}
+
+/* ==[ sankey chart ]========================================================================================= */
+
+.sankey-link {
+    fill: none;
+    stroke-opacity: 0.5;
+}
+
+.sankey-link:hover {
+    stroke-opacity: 0.9;
+}
+
+.sankey-node-label {
+    pointer-events: none;
+    fill: var(--black);
 }
 
 /* ==[ small multiples scatterplot ]============================================================================= */
@@ -29,3 +118,9 @@ body {
     font-size: 11px;
 }
 
+/* ==[ dark mode toggle ]============================================================================================ */
+
+#dark-mode-switch {
+    position: absolute;
+    right: 16px;
+}
