@@ -44,8 +44,7 @@ const numericalAttributes = [
     'support_ratio_college',
     'volunteering_rate_college',
     'ec_parent_ses_college_quartile',
-    'bias_own_ses_college_quartile',
-    'change_ses'
+    'bias_own_ses_college_quartile'
 ]
 
 // Load Social Capital data
@@ -78,6 +77,7 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
         smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
             parentElement: '#small-multiples-scatterplots'
         }, dispatcher)
+
         updateGraphs()
     })
 })
