@@ -5,6 +5,15 @@ Notes
 - Zoom may need to be reduced to ~75% to display all content
 
 Resources
+- D3 Sankey usage: 
+  - Resources
+    - https://observablehq.com/@d3/sankey/2?collection=@d3/d3-sankey
+    - https://github.com/d3/d3-sankey#sankey_nodeSort
+  - Changes
+    - Data preprocessing and processing is done on our own
+    - As for sankey generation, split up code into the right places (`updateVis`, `renderVis`)
+      and renamed variables as needed, or to follow class conventions
+    - Modified sankey configurations (`nodeSort`, `linkSort`)
 - Dark mode switcher: https://dev.to/ananyaneogi/create-a-dark-light-mode-switch-with-css-variables-34l8
 - Preprocess CSV:
   - Resources
