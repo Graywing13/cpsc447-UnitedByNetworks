@@ -45,6 +45,8 @@ const numericalAttributes = [
     'volunteering_rate_college',
     'ec_parent_ses_college_quartile',
     'bias_own_ses_college_quartile',
+    'lat',
+    'lon',
     'change_ses'
 ]
 d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
