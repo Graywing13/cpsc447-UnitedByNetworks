@@ -69,6 +69,10 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
         })
     })
     allData = data
+    
+    // Load US State Boundaries data
+    d3.json('data/us-state-boundaries.geojson').then(function (us) {
+        const stateBorders = us.features
 
     // Load US State Boundaries data
     d3.json('data/us-state-boundaries.geojson').then(function (us) {
