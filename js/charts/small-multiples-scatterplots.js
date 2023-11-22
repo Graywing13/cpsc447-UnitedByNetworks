@@ -1,49 +1,47 @@
+let plotOne, plotTwo, plotThree;
+
 class SmallMultiplesScatterplots {
     constructor(_config, dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 360,
-            containerHeight: _config.containerHeight || 240,
+            containerWidth: _config.containerWidth || 550,
+            containerHeight: _config.containerHeight || 450,
             margin: _config.margin || {
-                top: 0,
-                right: 0,
-                bottom: 0,
-                left: 0
+                top: 20,
+                right: 20,
+                bottom: 20,
+                left: 20
             }
         }
-        this.dispatcher = dispatcher
-        this.initVis()
+        this.dispatcher = dispatcher;
+        this.initVis();
     }
 
     initVis() {
-        let vis = this
-
-        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
-
-        vis.svg = d3.select(vis.config.parentElement).append('svg')
-            .attr('width', vis.config.containerWidth)
-            .attr('height', vis.config.containerHeight)
-            // TODO delete, just to make it visible
-            .attr('style', 'background-color:purple')
-
-        // TODO
+        plotOne = new ScatterplotOne(
+            {parentElement: '#scatterplot-one'},
+            dispatcher
+        );
+        plotTwo = new ScatterplotTwo(
+            {parentElement: '#scatterplot-two'},
+            dispatcher
+        );
+        plotThree = new ScatterplotThree(
+            {parentElement: '#scatterplot-three'},
+            dispatcher
+        );
     }
 
     updateVis() {
-        let vis = this
+        let vis = this;
 
-        // TODO
+        plotOne.data = vis.data;
+        plotOne.updateVis();
 
-        // TODO delete placeholder
-        vis.dispatcher.call('placeholder', null, vis.config.parentElement)
+        plotTwo.data = vis.data;
+        plotTwo.updateVis();
 
-        vis.renderVis()
-    }
-
-    renderVis() {
-        let vis = this
-
-        // TODO
+        plotThree.data = vis.data;
+        plotThree.updateVis();
     }
 }

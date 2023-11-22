@@ -52,7 +52,8 @@ const numericalAttributes = [
     'support_ratio_college',
     'volunteering_rate_college',
     'ec_parent_ses_college_quartile',
-    'bias_own_ses_college_quartile'
+    'bias_own_ses_college_quartile',
+    'change_ses'
 ]
 d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     data.forEach(d => {
@@ -71,6 +72,8 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
         {parentElement: '#small-multiples-scatterplots'},
         dispatcher
     )
+
+    console.log('hi')
 
     updateGraphs()
 })
