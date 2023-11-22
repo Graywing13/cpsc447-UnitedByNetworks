@@ -15,6 +15,10 @@
 }
 
 /* ==[ index.html ]================================================================================================== */
+* {
+    font-family: sans-serif;
+}
+
 body {
     text-align: center;
     background-color: var(--white);
@@ -98,6 +102,16 @@ body {
 .sankey-node-label {
     pointer-events: none;
     fill: var(--black);
+}
+
+/* ==[ small multiples scatterplot ]============================================================================= */
+
+.right-margin-text {
+    font-size: small;
+}
+
+.axis-title {
+    font-size: 11px;
 }
 
 /* ==[ dark mode toggle ]============================================================================================ */
