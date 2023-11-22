@@ -9,20 +9,18 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.1.0/dist/simple-statistics.min.js"></script>
 </head>
 <body>
-    <!-- HTML content and SVG drawing area -->
-    <div id="header">
+    <!-- Add HTML content, SVG drawing area, ... -->
         <h1>Social Connectedness Across US Colleges</h1>
-        <button id="dark-mode-switch"></button>
-    </div>
     <div id="content">
         <div id="content-left">
-            <div id="dot-density-map" class="svg-container"></div>
+            <div id="dot-density-map"></div>
+            <div id="tbd"></div>
         </div>
         <div id="content-right">
-            <div id="sankey-div" class="svg-container">
+            <div id="dual-data-scatterplot">
                 <h2>Generational Biases</h2>
             </div>
-            <div id="small-multiples-scatterplots" class="svg-container">
+            <div id="small-multiples-scatterplots">
                 <h2>Controllable Factors vs. SES Increase</h2>
                 <div id="scatterplot-one"></div>
                 <div id="scatterplot-two"></div>
@@ -31,18 +29,12 @@
         </div>
     </div>
 
-    <!-- Tooltips -->
-    <div id="help-text" class="tooltip"></div>
-    <div id="tooltip" class="tooltip"></div>
-
-    <!-- D3 bundles -->
+    <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
-    <script src="js/d3-sankey.min.js"></script>
-    <script src="js/d3-array.min.js"></script>
 
     <!-- Our JS code -->
     <script src="js/charts/dot-density-map.js"></script>
-    <script src="js/charts/sankey-chart.js"></script>
+    <script src="js/charts/dual-data-scatterplot.js"></script>
     <script src="js/charts/small-multiples-scatterplots.js"></script>
     <script src="js/charts/scatterplot-one.js"></script>
     <script src="js/charts/scatterplot-two.js"></script>
