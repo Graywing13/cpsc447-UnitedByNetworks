@@ -36,12 +36,15 @@ class SmallMultiplesScatterplots {
         let vis = this;
 
         plotOne.data = vis.data;
+        plotOne.maxParentSes = vis.maxParentSes;
         plotOne.updateVis();
 
         plotTwo.data = vis.data;
+        plotTwo.maxParentSes = vis.maxParentSes;
         plotTwo.updateVis();
 
         plotThree.data = vis.data;
+        plotThree.maxParentSes = vis.maxParentSes;
         plotThree.updateVis();
     }
 }
