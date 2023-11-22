@@ -1,4 +1,4 @@
-let allData
+let allData;
 let dotDensityMap, dualDataScatterplot, smallMultiplesScatterplotsWrapper
 
 const dispatcher = d3.dispatch('placeholder')
@@ -8,7 +8,7 @@ const dispatcher = d3.dispatch('placeholder')
  */
 // Update all graphs with new data / new filter change
 function updateGraphs() {
-    const filteredData = allData 
+    const filteredData = allData // TODO edit as needed
 
     dotDensityMap.data = filteredData
     dotDensityMap.updateVis()
@@ -24,8 +24,8 @@ function updateGraphs() {
  * ==[ DISPATCH HANDLERS ]==============================================================================================
  */
 // TODO delete placeholder
-dispatcher.on('placeholder', (str, element) => {
-    console.log(`${str} called dispatch for ${element}`)
+dispatcher.on('placeholder', str => {
+    console.log(`${str} called dispatch`)
 })
 
 /**
@@ -44,10 +44,9 @@ const numericalAttributes = [
     'support_ratio_college',
     'volunteering_rate_college',
     'ec_parent_ses_college_quartile',
-    'bias_own_ses_college_quartile'
+    'bias_own_ses_college_quartile',
+    'change_ses'
 ]
-
-// Load Social Capital data
 d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     data.forEach(d => {
         numericalAttributes.forEach((numAttr) => {
@@ -57,27 +56,17 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     allData = data
     console.log(allData[0])
 
-    // Load US State Boundaries data
-    d3.json('data/us-state-boundaries.geojson').then(function (us) {
-        const stateBorders = us.features
+    dotDensityMap = new DotDensityMap({parentElement: '#dot-density-map'}, dispatcher)
+    dualDataScatterplot = new DualDataScatterplot(
+        {parentElement: '#dual-data-scatterplot'},
+        dispatcher
+    )
+    smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots(
+        {parentElement: '#small-multiples-scatterplots'},
+        dispatcher
+    )
 
-        // Initialize Dot Density Map
-        dotDensityMap = new DotDensityMap({
-            parentElement: '#dot-density-map',
-            stateBorders: stateBorders,
-            collegeData: allData
-        }, dispatcher)
+    console.log('hi')
 
-        // Initialize Dual Data Scatterplot
-        dualDataScatterplot = new DualDataScatterplot({
-            parentElement: '#dual-data-scatterplot'
-        }, dispatcher)
-        
-         // Initialize Small Multiples Scatterplots 
-        smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
-            parentElement: '#small-multiples-scatterplots'
-        }, dispatcher)
-
-        updateGraphs()
-    })
+    updateGraphs()
 })
