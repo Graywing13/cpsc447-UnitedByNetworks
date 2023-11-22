@@ -164,7 +164,7 @@ class ScatterplotOne {
             'volunteering_rate_college'
         ];
 
-        // For every category, filter for ones that have valid data, then calculate correlation coefficient
+        // For every category, filter for valid data, then calculate correlation coefficient
         categoriesOfInterest.forEach((category) => {
             const dataFiltered = data.filter((d) => d.change_ses !== '' && d[category] !== '');
             const changeSesData = dataFiltered.map(d => d.change_ses)
