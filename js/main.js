@@ -56,17 +56,27 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     allData = data
     console.log(allData[0])
 
-    dotDensityMap = new DotDensityMap({parentElement: '#dot-density-map'}, dispatcher)
-    dualDataScatterplot = new DualDataScatterplot(
-        {parentElement: '#dual-data-scatterplot'},
-        dispatcher
-    )
-    smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots(
-        {parentElement: '#small-multiples-scatterplots'},
-        dispatcher
-    )
+    // Load US State Boundaries data
+    d3.json('data/us-state-boundaries.geojson').then(function (us) {
+        const stateBorders = us.features
 
-    console.log('hi')
+        // Initialize Dot Density Map
+        dotDensityMap = new DotDensityMap({
+            parentElement: '#dot-density-map',
+            stateBorders: stateBorders,
+            collegeData: allData
+        }, dispatcher)
 
-    updateGraphs()
+        // Initialize Dual Data Scatterplot
+        dualDataScatterplot = new DualDataScatterplot({
+            parentElement: '#dual-data-scatterplot'
+        }, dispatcher)
+        
+         // Initialize Small Multiples Scatterplots 
+        smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
+            parentElement: '#small-multiples-scatterplots'
+        }, dispatcher)
+
+        updateGraphs()
+    })
 })
