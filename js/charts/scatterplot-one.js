@@ -30,11 +30,11 @@ class ScatterplotOne {
         // initialize axis
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
-            .domain([0, 2]);
+            .domain([-1, 2]);
 
         vis.yScale = d3.scaleLinear()
             .range([vis.height, 0])
-            .domain([0, 2]);
+            .domain([-2, 2]);
 
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
