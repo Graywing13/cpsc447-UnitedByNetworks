@@ -69,59 +69,60 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
         })
     })
     allData = data
-    
-    // Load US State Boundaries data
-    d3.json('data/us-state-boundaries.geojson').then(function (us) {
-        const stateBorders = us.features
 
     // Load US State Boundaries data
     d3.json('data/us-state-boundaries.geojson').then(function (us) {
         const stateBorders = us.features
 
-        // Initialize Dot Density Map
-        dotDensityMap = new DotDensityMap({
-            parentElement: '#dot-density-map',
-            stateBorders: stateBorders,
-            collegeData: allData
-        }, dispatcher)
+        // Load US State Boundaries data
+        d3.json('data/us-state-boundaries.geojson').then(function (us) {
+            const stateBorders = us.features
 
-        // Initialize Sankey
-        sankeyChart = new SankeyChart(
-            {parentElement: '#sankey-div'},
-            dispatcher
-        )
+            // Initialize Dot Density Map
+            dotDensityMap = new DotDensityMap({
+                parentElement: '#dot-density-map',
+                stateBorders: stateBorders,
+                collegeData: allData
+            }, dispatcher)
 
-        // Initialize Small Multiples Scatterplots 
-        smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
-            parentElement: '#small-multiples-scatterplots'
-        }, dispatcher)
+            // Initialize Sankey
+            sankeyChart = new SankeyChart(
+                {parentElement: '#sankey-div'},
+                dispatcher
+            )
 
-        updateGraphs()
+            // Initialize Small Multiples Scatterplots 
+            smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
+                parentElement: '#small-multiples-scatterplots'
+            }, dispatcher)
+
+            updateGraphs()
+        })
     })
 })
 
-/**
- * ==[ OTHER LOGIC ]====================================================================================================
- */
+    /**
+     * ==[ OTHER LOGIC ]====================================================================================================
+     */
 
-function setupDarkModeSwitch() {
-    d3.select('#dark-mode-switch')
-        .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
-        .on('click', () => {
-            isDarkMode = !isDarkMode
-            document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-            setupDarkModeSwitch()
+    function setupDarkModeSwitch() {
+        d3.select('#dark-mode-switch')
+            .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
+            .on('click', () => {
+                isDarkMode = !isDarkMode
+                document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+                setupDarkModeSwitch()
+            })
+    }
+
+    setupDarkModeSwitch()
+
+    d3.select('#parent-ses-slider')
+        .on('input', (event) => {
+            bisliderParentSesValue = event.target.value
+
+            // TODO this should just call updateVis() once Sankey join is implemented correctly
+            smallMultiplesScatterplotsWrapper.data = allData
+            smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
+            smallMultiplesScatterplotsWrapper.updateVis()
         })
-}
-
-setupDarkModeSwitch()
-
-d3.select('#parent-ses-slider')
-    .on('input', (event) => {
-        bisliderParentSesValue = event.target.value
-        
-        // TODO this should just call updateVis() once Sankey join is implemented correctly
-        smallMultiplesScatterplotsWrapper.data = allData
-        smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
-        smallMultiplesScatterplotsWrapper.updateVis()
-    })
