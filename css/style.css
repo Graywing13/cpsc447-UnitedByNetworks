@@ -88,6 +88,10 @@ body {
     cursor: pointer;
 }
 
+.black-color {
+    color: black;
+}
+
 /* ==[ sankey chart ]========================================================================================= */
 
 .sankey-link {

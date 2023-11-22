@@ -46,7 +46,8 @@ class ScatterplotThree {
 
         // group elements
         vis.chart = vis.svg.append('g')
-            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+            .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`)
+            .attr('class', 'black-color');
 
         vis.xAxisG = vis.chart.append('g')
             .attr('class', 'axis x-axis')
