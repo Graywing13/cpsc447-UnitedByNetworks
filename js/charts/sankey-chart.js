@@ -193,37 +193,7 @@ class SankeyChart {
     renderVis() {
         let vis = this
 
-        // Create node rects
-        vis.rectMarks = vis.chart.selectAll('.sankey-node-group')
-            .data(vis.sankeyNodes, d => d.name)
-            .join(enter => {
-                const groups = enter.append('g')
-                    .attr('class', '.sankey-node-group')
-                const nodes = groups.append('rect')
-                    .attr('class', 'sankey-node clickable')
-                    .attr('x', d => d.x0)
-                    .attr('y', d => d.y0)
-                    .attr('height', d => d.y1 - d.y0)
-                    .attr('width', d => d.x1 - d.x0)
-                    .attr('fill', d => SANKEY_COLORS[d.category])
-
-                // Add tooltip-type label
-                const tooltips = nodes.append('title').text(d => `${d.name}`)
-
-                // Add node labels
-                const labels = groups.append('text')
-                    .attr('class', 'sankey-node-label')
-                    .attr('x', d => d.x0 < vis.width / 2 ? d.x1 + 6 : d.x0 - 6)
-                    .attr('y', d => (d.y1 + d.y0) / 2)
-                    .attr('dy', '0.35em')
-                    .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'start' : 'end')
-                    .text(d => d.label)
-                    .raise()
-
-                return groups
-            })
-
-        // Create links between nodes
+        // Create links (must occur first so that text displays on top)
         vis.linkMarks = vis.chart.selectAll('.sankey-link-group')
             .data(vis.sankeyLinks, d => d.uid)
             .join(
@@ -265,6 +235,46 @@ class SankeyChart {
                 },
                 update => update,
                 exit => exit.remove()
+            )
+
+        // Create node rects
+        vis.rectMarks = vis.chart.selectAll('.sankey-node-group')
+            .data(vis.sankeyNodes, d => d.name)
+            .join(enter => {
+                    const groups = enter.append('g')
+                        .attr('class', 'sankey-node-group')
+
+                    const nodes = groups.append('rect')
+                        .attr('class', 'sankey-node clickable')
+                        .attr('x', d => d.x0)
+                        .attr('y', d => d.y0)
+                        .attr('height', d => d.y1 - d.y0)
+                        .attr('width', d => d.x1 - d.x0)
+                        .attr('fill', d => SANKEY_COLORS[d.category])
+
+                    // Add tooltip-type label
+                    const tooltips = nodes.append('title').text(d => `${d.name}`)
+
+                    // Add node labels
+                    const labels = groups.append('text')
+                        .attr('class', 'sankey-node-label')
+                        .attr('x', d => d.x0 < vis.width / 2 ? d.x1 + 6 : d.x0 - 6)
+                        .attr('y', d => (d.y1 + d.y0) / 2)
+                        .attr('dy', '0.35em')
+                        .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'start' : 'end')
+                        .text(d => d.label)
+                        .raise()
+
+                    return groups
+                },
+                update => {
+                    console.log(update)
+                    return update
+                },
+                exit => {
+                    console.log(exit)
+                    return exit
+                }
             )
     }
 }
