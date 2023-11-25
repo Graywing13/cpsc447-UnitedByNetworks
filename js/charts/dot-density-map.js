@@ -104,9 +104,6 @@ class DotDensityMap {
             .attr('text-anchor', 'middle')
             .attr('fill', 'orangered')
             .text('Amount of mutual friends');
-
-        // Call the update function to render the map
-        vis.updateVis()
     }
 
     updateVis() {
@@ -168,5 +165,8 @@ class DotDensityMap {
         collegeGroups.append('circle')
             .attr('r', d => radiusScale(d.bias_own_ses_college))
             .attr('fill', d => colourScale(d.clustering_college || 0));
+        
+        // Notify main.js that rendering is done
+        vis.dispatcher.call('completedInitialLoad', null, "dot density map");
     }
 }

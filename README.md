@@ -21,3 +21,11 @@ Resources
     - https://csv.js.org/parse/examples/stream_pipe/
   - Changes
     - Mainly only used the stream setup listed in the sites; all other logic is written by us.
+
+Special thanks
+- Image credits
+  - Cats in intro modal: https://i.pinimg.com/736x/ea/39/fc/ea39fc7a6e6ac52ab124f0d5802d8a0b.jpg
+- Colour help
+  - https://coolors.co/eeeae7-031826-cfa077-30292f-5d737e
+- Misc research
+  - CSS visibility fade: https://greywyvern.com/337

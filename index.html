@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <link rel="icon" href="data:;base64,iVBORwOKGO="/>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC">
     <!-- Included packages -->
     <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.1.0/dist/simple-statistics.min.js"></script>
 </head>
@@ -14,6 +15,20 @@
     <h1>Social Connectedness Across US Colleges</h1>
     <button id="dark-mode-switch"></button>
 </div>
+
+<div id="loading">
+    <h3>Loading...</h3>
+    <div id="loading-bar">
+        <div class="span-line">
+            <div id="span-line-left" class="span-line-filled"></div>
+        </div>
+        <p id="load-percentage">0%</p>
+        <div class="span-line">
+            <div id="span-line-right" class="span-line-filled"></div>
+        </div>
+    </div>
+</div>
+
 <div id="content">
     <div id="content-left">
         <div id="dot-density-map" class="svg-container"></div>

@@ -1,10 +1,17 @@
 let allData;
 let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
 
-const dispatcher = d3.dispatch('placeholder', 'sankeyLinkSelected')
+const dispatcher = d3.dispatch('completedInitialLoad', 'sankeyLinkSelected')
 
 let isDarkMode = false
 let bisliderParentSesValue = 1.74
+let initialLoadCompletionCount = 0
+
+/**
+ * ==[ CONSTANTS ]======================================================================================================
+ */
+
+const TOTAL_CHART_COUNT = 5
 
 /**
  * ==[ HELPERS ]========================================================================================================
@@ -27,9 +34,16 @@ function updateGraphs() {
 /**
  * ==[ DISPATCH HANDLERS ]==============================================================================================
  */
-// TODO delete placeholder
-dispatcher.on('placeholder', str => {
-    console.log(`${str} called dispatch`)
+
+dispatcher.on('completedInitialLoad', _chartName => {
+    // Update the amount of elements loaded
+    initialLoadCompletionCount++
+    d3.select('#load-percentage').text(`${initialLoadCompletionCount * 20} %`)
+
+    // If everything is done loading, hide the loading screen
+    if (initialLoadCompletionCount === TOTAL_CHART_COUNT) {
+        d3.select('#loading').attr('class', 'invisible')
+    }
 })
 
 dispatcher.on('sankeyLinkSelected', data => {
@@ -101,28 +115,28 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     })
 })
 
-    /**
-     * ==[ OTHER LOGIC ]====================================================================================================
-     */
+/**
+ * ==[ OTHER LOGIC ]====================================================================================================
+ */
 
-    function setupDarkModeSwitch() {
-        d3.select('#dark-mode-switch')
-            .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
-            .on('click', () => {
-                isDarkMode = !isDarkMode
-                document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-                setupDarkModeSwitch()
-            })
-    }
-
-    setupDarkModeSwitch()
-
-    d3.select('#parent-ses-slider')
-        .on('input', (event) => {
-            bisliderParentSesValue = event.target.value
-
-            // TODO this should just call updateVis() once Sankey join is implemented correctly
-            smallMultiplesScatterplotsWrapper.data = allData
-            smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
-            smallMultiplesScatterplotsWrapper.updateVis()
+function setupDarkModeSwitch() {
+    d3.select('#dark-mode-switch')
+        .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
+        .on('click', () => {
+            isDarkMode = !isDarkMode
+            document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+            setupDarkModeSwitch()
         })
+}
+
+setupDarkModeSwitch()
+
+d3.select('#parent-ses-slider')
+    .on('input', (event) => {
+        bisliderParentSesValue = event.target.value
+
+        // TODO this should just call updateVis() once Sankey join is implemented correctly
+        smallMultiplesScatterplotsWrapper.data = allData
+        smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
+        smallMultiplesScatterplotsWrapper.updateVis()
+    })

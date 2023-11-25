@@ -104,9 +104,6 @@ class ScatterplotTwo {
             .attr('dy', '.71em')
             .text('Δ SES');
 
-        // TODO delete placeholder
-        vis.dispatcher.call('placeholder', null, vis.config.parentElement);
-
         vis.renderVis();
     }
 
@@ -175,6 +172,9 @@ class ScatterplotTwo {
                     .text(`Pearson's Correlation: ${correlation}`),
                 update => update.text(`Pearson's Correlation: ${correlation}`)
             )
+        
+        // Notify main.js that rendering is done
+        vis.dispatcher.call('completedInitialLoad', null, "scatterplot 1");
 
         // // Add foreignObject to the right margin
         // const foreignObject = vis.svg.append('foreignObject')

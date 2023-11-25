@@ -248,5 +248,8 @@ class SankeyChart {
         // Add tooltip-type label to nodes and links
         vis.rectMarks.append('title').text(d => `${d.name}`)
         vis.linkMarks.append('title').text(d => `${d.source.name} → ${d.target.name}`)
+        
+        // Notify main.js that rendering is done
+        vis.dispatcher.call('completedInitialLoad', null, "sankey");
     }
 }

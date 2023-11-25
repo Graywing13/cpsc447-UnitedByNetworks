@@ -91,9 +91,6 @@ class ScatterplotThree {
             .attr('dy', '.71em')
             .text('Δ SES');
 
-        // TODO delete placeholder
-        vis.dispatcher.call('placeholder', null, vis.config.parentElement);
-
         vis.renderVis();
     }
 
@@ -162,6 +159,9 @@ class ScatterplotThree {
                     .text(`Pearson's Correlation: ${correlation}`),
                 update => update.text(`Pearson's Correlation: ${correlation}`)
             )
+        
+        // Notify main.js that rendering is done
+        vis.dispatcher.call('completedInitialLoad', null, "scatterplot 2");
     }
 
     calculatePearsonCorrelation(data) {
