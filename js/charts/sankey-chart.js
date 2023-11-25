@@ -229,7 +229,7 @@ class SankeyChart {
                         })
 
                     // Add tooltip-type label
-                    groups.append('title').text(d => `${d.source.name} → ${d.target.name}`)
+                    const tooltips = groups.append('title').text(d => `${d.source.name} → ${d.target.name}`)
 
                     return groups
                 },
@@ -276,5 +276,8 @@ class SankeyChart {
                     return exit
                 }
             )
+        
+        // Notify main.js that rendering is done
+        vis.dispatcher.call('completedInitialLoad', null, "sankey");
     }
 }

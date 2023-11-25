@@ -5,6 +5,9 @@
     --light-gray: #f8f8f8;
     --black: #000;
     --hover-shadow: rgb(0 0 0 / 0.1);
+    --background-color: #ECE7E4;
+    --background-color-lighter: #E6DFDB;
+    --green: #55af2a;
 }
 
 [data-theme="dark"] {
@@ -12,6 +15,9 @@
     --light-gray: #111;
     --black: #fff;
     --hover-shadow: rgb(255 255 255 / 0.1);
+    --background-color: #02111B;
+    --background-color-lighter: #042439;
+    --green: #55af2a;
 }
 
 /* ==[ index.html ]================================================================================================== */
@@ -21,8 +27,10 @@
 
 body {
     text-align: center;
-    background-color: var(--white);
+    background-color: var(--background-color);
     color: var(--black);
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 #header {
@@ -46,6 +54,90 @@ body {
 
 .svg-container {
     padding: 16px;
+}
+
+/* ==[ loading indicator ]=========================================================================================== */
+
+#loading {
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: var(--background-color-lighter);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    visibility: visible;
+    opacity: 100%;
+    
+    transition: visibility 0s ease-in-out 0.5s, opacity 0.5s ease-in-out;
+}
+
+#loading.invisible {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#loading > h3 {
+    position: relative;
+    width: 100%;
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 72px;
+    margin: 0;
+    opacity: 85%;
+}
+
+#loading-bar {
+    position: relative;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 32px;
+}
+
+#loading-bar > .span-line {
+    position: relative;
+    width: 100%;
+    flex-grow: 1;
+    height: 3px;
+    background-color: var(--light-gray)
+}
+
+@keyframes loadingAnimation {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.span-line-filled {
+    background-color: var(--green);
+    position: absolute;
+    height: 100%;
+    width: 0;
+    
+    animation: 0.8s ease-in 0s 1 loadingAnimation;
+    animation-fill-mode:forwards;
+}
+
+#loading-bar > #load-percentage {
+    font-family: 'Amatic SC', sans-serif;
+    flex-shrink: 0;
+    padding: 16px;
+    font-weight: bolder;
+}
+
+#span-line-left {
+    left: 0;
+}
+
+#span-line-right {
+    right: 0;
 }
 
 /* ==[ tooltips ]==================================================================================================== */

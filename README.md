@@ -25,3 +25,9 @@ Resources
 Special thanks
 - StackOverflow
   - Joining groups: https://stackoverflow.com/a/68201968
+- Image credits
+  - Cats in intro modal: https://i.pinimg.com/736x/ea/39/fc/ea39fc7a6e6ac52ab124f0d5802d8a0b.jpg
+- Colour help
+  - https://coolors.co/eeeae7-031826-cfa077-30292f-5d737e
+- Misc research
+  - CSS visibility fade: https://greywyvern.com/337
