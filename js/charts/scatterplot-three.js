@@ -107,7 +107,7 @@ class ScatterplotThree {
             .call(g => g.select('.domain').remove());
 
         // draw circles
-        const category = vis.topThreeCategories[0]
+        const category = vis.topThreeCategories[2]
         const circlesData = vis.data.filter((d) => d.change_ses !== '' && d[category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes)
         const circles = vis.chart.selectAll('.point')
             .data(circlesData, d => d.college_name)
@@ -126,7 +126,7 @@ class ScatterplotThree {
             .text('3rd Most Correlated:');
 
         vis.chart.selectAll('.most-correlated')
-            .data([vis.topThreeCategories[0]])
+            .data([vis.topThreeCategories[2]])
             .join(
                 enter => enter.append("text")
                     .attr('class', 'right-margin-text most-correlated')
@@ -134,7 +134,7 @@ class ScatterplotThree {
                     .attr('y', 30)
                     .attr('dy', '.71em')
                     .style('font-style', 'italic')
-                    .text(vis.topThreeCategories[0]),
+                    .text(vis.topThreeCategories[2]),
                 update => update.text(vis.topThreeCategories[2])
             )
 
@@ -145,7 +145,7 @@ class ScatterplotThree {
             .attr('dy', '.71em')
             .text('Description Placeholder');
 
-        const correlation = vis.correlationData.get(vis.topThreeCategories[0]).toFixed(3)
+        const correlation = vis.correlationData.get(vis.topThreeCategories[2]).toFixed(3)
 
         vis.chart.selectAll('.correlation')
             .data([correlation])

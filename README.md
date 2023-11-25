@@ -23,6 +23,8 @@ Resources
     - Mainly only used the stream setup listed in the sites; all other logic is written by us.
 
 Special thanks
+- StackOverflow
+  - Joining groups: https://stackoverflow.com/a/68201968
 - Image credits
   - Cats in intro modal: https://i.pinimg.com/736x/ea/39/fc/ea39fc7a6e6ac52ab124f0d5802d8a0b.jpg
 - Colour help

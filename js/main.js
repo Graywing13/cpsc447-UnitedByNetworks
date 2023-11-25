@@ -131,12 +131,8 @@ function setupDarkModeSwitch() {
 
 setupDarkModeSwitch()
 
-d3.select('#parent-ses-slider')
-    .on('input', (event) => {
-        bisliderParentSesValue = event.target.value
-
-        // TODO this should just call updateVis() once Sankey join is implemented correctly
-        smallMultiplesScatterplotsWrapper.data = allData
-        smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
-        smallMultiplesScatterplotsWrapper.updateVis()
-    })
+    d3.select('#parent-ses-slider')
+        .on('input', (event) => {
+            bisliderParentSesValue = event.target.value
+            updateGraphs()
+        })

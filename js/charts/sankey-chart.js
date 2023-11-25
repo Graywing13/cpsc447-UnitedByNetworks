@@ -180,7 +180,12 @@ class SankeyChart {
             links: processedLinks.map(d => Object.assign({}, d))
         })
         vis.sankeyNodes = sankeyNodes
-        vis.sankeyLinks = sankeyLinks
+        vis.sankeyLinks = sankeyLinks.map(d => {
+            return {
+                ...d,
+                uid: `link-${d.y0}-${d.y1}` // assumed to be a unique way to identify a link
+            }
+        })
 
         vis.renderVis()
     }
@@ -188,66 +193,89 @@ class SankeyChart {
     renderVis() {
         let vis = this
 
+        // Create links (must occur first so that text displays on top)
+        vis.linkMarks = vis.chart.selectAll('.sankey-link-group')
+            .data(vis.sankeyLinks, d => d.uid)
+            .join(
+                enter => {
+                    const groups = enter.append('g')
+                        .attr('class', 'sankey-link-group')
+
+                    // Add link gradient (makes link visible)
+                    const gradients = groups.append('linearGradient')
+                        .attr('id', d => d.uid)
+                        .attr('gradientUnits', 'userSpaceOnUse')
+                        .attr('x1', d => d.source.x1)
+                        .attr('x2', d => d.target.x0)
+                    gradients.append('stop')
+                        .attr('offset', '0%')
+                        .attr('stop-color', d => SANKEY_COLORS[d.source.category])
+                    gradients.append('stop')
+                        .attr('offset', '100%')
+                        .attr('stop-color', d => SANKEY_COLORS[d.target.category])
+
+                    // Add link path
+                    const paths = groups.append('path')
+                        .attr('class', 'sankey-link clickable')
+                        .attr('d', d3.sankeyLinkHorizontal())
+                        .attr('stroke', (d) => `url(#${d.uid})`)
+                        .attr('stroke-width', d => Math.max(1, d.width))
+                        .on('click', (event, d) => {
+                            const data = {
+                                parentSesQuartile: +d.source.name.slice(-1),
+                                friendingBiasQuartile: +d.target.name.slice(-1)
+                            }
+                            vis.dispatcher.call('sankeyLinkSelected', null, data)
+                        })
+
+                    // Add tooltip-type label
+                    const tooltips = groups.append('title').text(d => `${d.source.name} → ${d.target.name}`)
+
+                    return groups
+                },
+                update => update,
+                exit => exit.remove()
+            )
+
         // Create node rects
-        vis.rectMarks = vis.chart.append('g')
-            .attr('stroke', 'none')
-            .selectAll()
-            .data(vis.sankeyNodes)
-            .join('rect')
-            .attr('x', d => d.x0)
-            .attr('y', d => d.y0)
-            .attr('height', d => d.y1 - d.y0)
-            .attr('width', d => d.x1 - d.x0)
-            .attr('fill', d => SANKEY_COLORS[d.category])
+        vis.rectMarks = vis.chart.selectAll('.sankey-node-group')
+            .data(vis.sankeyNodes, d => d.name)
+            .join(enter => {
+                    const groups = enter.append('g')
+                        .attr('class', 'sankey-node-group')
 
-        // Create links between nodes
-        vis.linkMarks = vis.chart.selectAll('.sankey-link')
-            .data(vis.sankeyLinks)
-            .join('g')
-            .attr('class', 'sankey-link clickable')
+                    const nodes = groups.append('rect')
+                        .attr('class', 'sankey-node clickable')
+                        .attr('x', d => d.x0)
+                        .attr('y', d => d.y0)
+                        .attr('height', d => d.y1 - d.y0)
+                        .attr('width', d => d.x1 - d.x0)
+                        .attr('fill', d => SANKEY_COLORS[d.category])
 
-        // Add link gradient (makes link visible)
-        vis.gradient = vis.linkMarks.append('linearGradient')
-            .attr('id', d => (d.uid = `link-gradient-${d.source.category}-${d.target.category}`))
-            .attr('gradientUnits', 'userSpaceOnUse')
-            .attr('x1', d => d.source.x1)
-            .attr('x2', d => d.target.x0)
-        vis.gradient.append('stop')
-            .attr('offset', '0%')
-            .attr('stop-color', d => SANKEY_COLORS[d.source.category])
-        vis.gradient.append('stop')
-            .attr('offset', '100%')
-            .attr('stop-color', d => SANKEY_COLORS[d.target.category])
+                    // Add tooltip-type label
+                    const tooltips = nodes.append('title').text(d => `${d.name}`)
 
-        // Add link path
-        vis.linkMarks.append('path')
-            .attr('d', d3.sankeyLinkHorizontal())
-            .attr('stroke', (d) => `url(#${d.uid})`)
-            .attr('stroke-width', d => Math.max(1, d.width))
-            .on('click', (event, d) => {
-                const data = {
-                    parentSesQuartile: +d.source.name.slice(-1),
-                    friendingBiasQuartile: +d.target.name.slice(-1)
+                    // Add node labels
+                    const labels = groups.append('text')
+                        .attr('class', 'sankey-node-label')
+                        .attr('x', d => d.x0 < vis.width / 2 ? d.x1 + 6 : d.x0 - 6)
+                        .attr('y', d => (d.y1 + d.y0) / 2)
+                        .attr('dy', '0.35em')
+                        .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'start' : 'end')
+                        .text(d => d.label)
+                        .raise()
+
+                    return groups
+                },
+                update => {
+                    console.log(update)
+                    return update
+                },
+                exit => {
+                    console.log(exit)
+                    return exit
                 }
-                debugger
-                vis.dispatcher.call('sankeyLinkSelected', null, data)
-            })
-
-        // Add node labels
-        vis.chart.selectAll('.sankey-node-label')
-            .data(vis.sankeyNodes)
-            .join('text')
-            .attr('class', 'sankey-node-label')
-            .attr('x', d => d.x0 < vis.width / 2 ? d.x1 + 6 : d.x0 - 6)
-            .attr('y', d => (d.y1 + d.y0) / 2)
-            .attr('dy', '0.35em')
-            .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'start' : 'end')
-            .text(d => d.label)
-            .raise()
-
-        // Add tooltip-type label to nodes and links
-        vis.rectMarks.append('title').text(d => `${d.name}`)
-        vis.linkMarks.append('title').text(d => `${d.source.name} → ${d.target.name}`)
+            )
         
         // Notify main.js that rendering is done
         vis.dispatcher.call('completedInitialLoad', null, "sankey");
