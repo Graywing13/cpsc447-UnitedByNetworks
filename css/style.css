@@ -121,7 +121,8 @@ body {
     height: 100%;
     width: 0;
     
-    animation: 1s ease-in 0s 1 loadingAnimation;
+    animation: 0.8s ease-in 0s 1 loadingAnimation;
+    animation-fill-mode:forwards;
 }
 
 #loading-bar > #load-percentage {
