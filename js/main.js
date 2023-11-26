@@ -149,8 +149,10 @@ d3.select('#dont-show-again')
  */
 
 function setupDarkModeSwitch() {
-    d3.select('#dark-mode-switch').select('p')
+    d3.select('#dark-mode-switch')
+        .select('p')
         .text(`${isDarkMode ? 'Dark' : 'Light'}`)
+    d3.select('#dark-mode-switch')
         .on('click', () => {
             isDarkMode = !isDarkMode
             document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
