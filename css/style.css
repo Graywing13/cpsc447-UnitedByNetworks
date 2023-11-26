@@ -8,6 +8,7 @@
     --background-color: #ECE7E4;
     --background-color-darker: #E6DFDB;
     --background-color-darkest: #DDD4CF;
+    --muted-text: #6B584C;
     --green: #55af2a;
 }
 
@@ -19,6 +20,7 @@
     --background-color: #02111B;
     --background-color-darker: #042439;
     --background-color-darkest: #06304C;
+    --muted-text: #8DCCF6;
     --green: #55af2a;
 }
 
@@ -207,6 +209,8 @@ body {
 
 #intro-modal img {
     filter: drop-shadow(0 0 0.25rem #CCC);
+    max-width: 50%;
+    height: auto;
 }
 
 #intro-modal > .text-div {
@@ -214,10 +218,22 @@ body {
     margin-top: 1.5rem;
 }
 
-#close-intro-modal-button {
+#intro-modal > .pull-top-right {
     position: absolute;
     top: 15px;
     right: 15px;
+    display: flex;
+    gap: 16px;
+}
+
+#dont-show-again {
+    color: var(--muted-text);
+    font-weight: bolder;
+    border: 2px solid var(--background-color-darkest);
+    padding: 0 16px;
+}
+
+#close-intro-modal-button {
     width: 50px;
     height: 50px;
     background-color: var(--background-color-darkest);
