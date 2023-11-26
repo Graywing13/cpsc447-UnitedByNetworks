@@ -6,7 +6,9 @@
     --black: #000;
     --hover-shadow: rgb(0 0 0 / 0.1);
     --background-color: #ECE7E4;
-    --background-color-lighter: #E6DFDB;
+    --background-color-darker: #E6DFDB;
+    --background-color-darkest: #DDD4CF;
+    --muted-text: #6B584C;
     --green: #55af2a;
 }
 
@@ -16,13 +18,15 @@
     --black: #fff;
     --hover-shadow: rgb(255 255 255 / 0.1);
     --background-color: #02111B;
-    --background-color-lighter: #042439;
+    --background-color-darker: #042439;
+    --background-color-darkest: #06304C;
+    --muted-text: #8DCCF6;
     --green: #55af2a;
 }
 
 /* ==[ index.html ]================================================================================================== */
 * {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', system-ui;
 }
 
 body {
@@ -30,7 +34,6 @@ body {
     background-color: var(--background-color);
     color: var(--black);
     overflow-y: scroll;
-    overflow-x: hidden;
 }
 
 #header {
@@ -56,6 +59,49 @@ body {
     padding: 16px;
 }
 
+.icon-button {
+    width: 50px;
+}
+
+.button {
+    border: transparent;
+    background-color: var(--background-color-darker);
+    padding: 5px;
+    border-radius: 20px;
+    color: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--hover-shadow) !important;
+}
+
+/* ==[ toolbar ]===================================================================================================== */
+
+#toolbar {
+    position: absolute;
+    right: 16px;
+    display: flex;
+    gap: 10px;
+}
+
+#open-intro-modal-button {
+    font-size: 30px;
+}
+
+#dark-mode-switch {
+    padding: 0 20px;
+}
+
+#dark-mode-switch > p {
+    font-weight: bolder;
+    margin: 0;
+    padding-left: 6px;
+}
+
 /* ==[ loading indicator ]=========================================================================================== */
 
 #loading {
@@ -65,13 +111,13 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    background-color: var(--background-color-lighter);
+    background-color: var(--background-color-darker);
     display: flex;
     flex-direction: column;
     justify-content: center;
     visibility: visible;
     opacity: 100%;
-    
+
     transition: visibility 0s ease-in-out 0.5s, opacity 0.5s ease-in-out;
 }
 
@@ -80,7 +126,7 @@ body {
     visibility: hidden;
 }
 
-#loading > h3 {
+#loading > h3, #intro-modal h3 {
     position: relative;
     width: 100%;
     font-family: 'Amatic SC', sans-serif;
@@ -107,12 +153,12 @@ body {
 }
 
 @keyframes loadingAnimation {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 100%;
-  }
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
 }
 
 .span-line-filled {
@@ -120,9 +166,9 @@ body {
     position: absolute;
     height: 100%;
     width: 0;
-    
+
     animation: 0.8s ease-in 0s 1 loadingAnimation;
-    animation-fill-mode:forwards;
+    animation-fill-mode: forwards;
 }
 
 #loading-bar > #load-percentage {
@@ -138,6 +184,65 @@ body {
 
 #span-line-right {
     right: 0;
+}
+
+/* ==[ intro modal ]================================================================================================= */
+
+#intro-modal {
+    z-index: 50;
+    background-color: var(--background-color-darker);
+    box-shadow: 10px 10px var(--hover-shadow), -1em 0 .4em var(--light-gray);
+    width: 80%;
+    height: 80%;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    padding: 0 10%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+}
+
+#intro-modal img {
+    filter: drop-shadow(0 0 0.25rem #CCC);
+    max-width: 50%;
+    height: auto;
+}
+
+#intro-modal > .text-div {
+    text-align: start;
+    margin-top: 1.5rem;
+}
+
+#intro-modal > .pull-top-right {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 16px;
+}
+
+#dont-show-again {
+    color: var(--muted-text);
+    font-weight: bolder;
+    border: 2px solid var(--background-color-darkest);
+    padding: 0 16px;
+}
+
+#close-intro-modal-button {
+    width: 50px;
+    height: 50px;
+    background-color: var(--background-color-darkest);
+}
+
+#close-intro-modal-button > p {
+    font-size: 55px;
+    margin: -12px 1px 0;
+    pointer-events: none;
 }
 
 /* ==[ tooltips ]==================================================================================================== */
@@ -184,6 +289,10 @@ body {
     color: black;
 }
 
+.background-fill {
+    fill: var(--background-color);
+}
+
 /* ==[ sankey chart ]========================================================================================= */
 
 .sankey-link {
@@ -208,11 +317,4 @@ body {
 
 .axis-title {
     font-size: 11px;
-}
-
-/* ==[ dark mode toggle ]============================================================================================ */
-
-#dark-mode-switch {
-    position: absolute;
-    right: 16px;
 }

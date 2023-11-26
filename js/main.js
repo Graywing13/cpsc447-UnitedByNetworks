@@ -12,6 +12,7 @@ let initialLoadCompletionCount = 0
  */
 
 const TOTAL_CHART_COUNT = 5
+const DO_NOT_SHOW_INTRO_MODAL_KEY = 'doNotShowIntroModal'
 
 /**
  * ==[ HELPERS ]========================================================================================================
@@ -116,12 +117,42 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
 })
 
 /**
+ * ==[ INTRO MODAL ]====================================================================================================
+ */
+
+// If the user had clicked "Don't show again", hide the intro modal on load
+if (window.localStorage.getItem(DO_NOT_SHOW_INTRO_MODAL_KEY) === 'true') {
+    d3.select('#intro-modal').style('visibility', 'hidden')
+}
+
+// Close intro modal when [x] pressed
+d3.select('#close-intro-modal-button')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'hidden')
+    })
+
+// Open intro modal when [?] pressed
+d3.select('#open-intro-modal-button')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'visible')
+    })
+
+// If user clicks "don't show again", hide the modal and persist this preference
+d3.select('#dont-show-again')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'hidden')
+        window.localStorage.setItem(DO_NOT_SHOW_INTRO_MODAL_KEY, 'true')
+    })
+
+/**
  * ==[ OTHER LOGIC ]====================================================================================================
  */
 
 function setupDarkModeSwitch() {
     d3.select('#dark-mode-switch')
-        .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
+        .select('p')
+        .text(`${isDarkMode ? 'Dark' : 'Light'}`)
+    d3.select('#dark-mode-switch')
         .on('click', () => {
             isDarkMode = !isDarkMode
             document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
@@ -131,8 +162,8 @@ function setupDarkModeSwitch() {
 
 setupDarkModeSwitch()
 
-    d3.select('#parent-ses-slider')
-        .on('input', (event) => {
-            bisliderParentSesValue = event.target.value
-            updateGraphs()
-        })
+d3.select('#parent-ses-slider')
+    .on('input', (event) => {
+        bisliderParentSesValue = event.target.value
+        updateGraphs()
+    })

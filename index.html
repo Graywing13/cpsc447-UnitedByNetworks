@@ -10,12 +10,8 @@
     <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.1.0/dist/simple-statistics.min.js"></script>
 </head>
 <body>
-<!-- HTML content and SVG drawing area -->
-<div id="header">
-    <h1>Social Connectedness Across US Colleges</h1>
-    <button id="dark-mode-switch"></button>
-</div>
 
+<!-- Loading screen -->
 <div id="loading">
     <h3>Loading...</h3>
     <div id="loading-bar">
@@ -29,6 +25,34 @@
     </div>
 </div>
 
+<!-- Intro modal -->
+<div id="intro-modal">
+    <img src="./images/ses_descriptor.png" alt="ses-description-graphic">
+    <div class="text-div">
+        <h3>Social Capital represents</h3>
+        <p>
+            the potency of a person's social network and their connection to the community.
+            Numerous individuals have contended that it plays a pivotal role in facilitating upward mobility,
+            underscoring the vital role of social capital and the potential of <strong>social
+            interconnectedness</strong> in enhancing our communities.
+            To contribute to the understanding of this critical dimension of society,
+            our visualization offers insights into social capital across colleges throughout the United States.
+        </p>
+    </div>
+    <div class="pull-top-right">
+        <div id="dont-show-again" class="button" title="Unless requested via the question button, hide this modal.">Don't show again</div>
+        <div id="close-intro-modal-button" class="button icon-button"><p>×</p></div>
+    </div>
+</div>
+
+<!-- HTML content and SVG drawing area -->
+<div id="header">
+    <h1>Social Connectedness Across US Colleges</h1>
+    <div id="toolbar">
+        <div id="dark-mode-switch" class="button">Theme:<p></p></div>
+        <div id="open-intro-modal-button" class="button icon-button">?</div>
+    </div>
+</div>
 <div id="content">
     <div id="content-left">
         <div id="dot-density-map" class="svg-container"></div>
