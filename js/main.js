@@ -120,8 +120,8 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
  */
 
 function setupDarkModeSwitch() {
-    d3.select('#dark-mode-switch')
-        .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
+    d3.select('#dark-mode-switch').select('p')
+        .text(`${isDarkMode ? 'Dark' : 'Light'}`)
         .on('click', () => {
             isDarkMode = !isDarkMode
             document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
