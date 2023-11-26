@@ -131,8 +131,18 @@ function setupDarkModeSwitch() {
 
 setupDarkModeSwitch()
 
-    d3.select('#parent-ses-slider')
-        .on('input', (event) => {
-            bisliderParentSesValue = event.target.value
-            updateGraphs()
-        })
+d3.select('#parent-ses-slider')
+    .on('input', (event) => {
+        bisliderParentSesValue = event.target.value
+        updateGraphs()
+    })
+
+d3.select('#close-intro-modal-button')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'hidden')
+    })
+
+d3.select('#open-intro-modal-button')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'visible')
+    })
