@@ -95,7 +95,7 @@ h2 {
 /* ==[ toolbar ]===================================================================================================== */
 
 #toolbar {
-    position: fixed;
+    position: absolute;
     right: 16px;
     top: 16px;
     display: flex;

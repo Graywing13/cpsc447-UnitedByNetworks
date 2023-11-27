@@ -1,4 +1,5 @@
 const INDEX_0 = 0
+
 class ScatterplotOne {
     constructor(_config, dispatcher, column) {
         this.config = {
@@ -31,7 +32,7 @@ class ScatterplotOne {
         // initialize axis
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
-            .domain([-1, 2]);
+            .domain([-1, 3]);
 
         vis.yScale = d3.scaleLinear()
             .range([vis.height, 0])
@@ -79,7 +80,9 @@ class ScatterplotOne {
         vis.yValue = d => d.change_ses;
 
         // x dynamic get and set
-        vis.xValue = d => d[currentCategory];
+        vis.xValue = d => currentCategory === 'mean_students_per_cohort'
+            ? (d[currentCategory] / 10000)
+            : d[currentCategory];
 
         // axis titles
         // vis.chart.append('text')
@@ -102,11 +105,11 @@ class ScatterplotOne {
 
     renderVis() {
         let vis = this;
-        
+
         // Figure out the correlation (if it exists)
         const category = vis.topThreeCategories[INDEX_0]
         const correlation = vis.correlationData.get(category)?.toFixed(3)
-        
+
         // Initialize a box that says "not enough data" if there isn't enough data
         vis.svg.selectAll('.not-enough-data')
             .data([correlation])
@@ -127,12 +130,12 @@ class ScatterplotOne {
                         .attr('x', 20)
                         .attr('y', vis.config.containerHeight / 2)
                         .raise()
-                    
+
                     return wrapper
                 },
                 update => update.style('opacity', correlation === undefined ? 100 : 0)
             )
-        
+
         // If the correlation is undefined, no need to render everything else
         if (correlation === undefined) {
             return

@@ -31,7 +31,7 @@ class ScatterplotTwo {
         // initialize axis
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
-            .domain([-1, 2]);
+            .domain([-1, 3]);
 
         vis.yScale = d3.scaleLinear()
             .range([vis.height, 0])
@@ -79,7 +79,9 @@ class ScatterplotTwo {
         vis.yValue = d => d.change_ses;
 
         // x dynamic get and set
-        vis.xValue = d => d[currentCategory];
+        vis.xValue = d => currentCategory === 'mean_students_per_cohort'
+            ? (d[currentCategory] / 10000)
+            : d[currentCategory];
 
         // axis titles
         // vis.chart.append('text')
