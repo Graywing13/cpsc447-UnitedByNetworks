@@ -4,6 +4,17 @@ Notes
 - This is meant for a screen size of at least 1600x900, otherwise tooltips may be cut off.
 - Zoom may need to be reduced to ~75% to display all content
 
+Supported Features
+- Core Visualization: 
+  - Dot Density map 
+  - Sankey -- filter data in map & scatterplots by clicking links
+  - Small multiples scatterplot -- filter scatterplots' data with slider
+- Visualization aid: 
+  - Clear Filters button -- reset sankey filters & scatterplot slider
+  - Description modal -- with "Don't show again" to hide on load, and openable via help icon
+  - Light/dark mode -- to aid with luminance contrast
+  - Label tooltips (e.g. on Sankey's friending bias)
+
 Resources
 - D3 Sankey usage: 
   - Resources

@@ -1,18 +1,3 @@
-let allData;
-let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
-
-const dispatcher = d3.dispatch('completedInitialLoad', 'filterData')
-
-let isDarkMode = false
-let bisliderParentSesValue = 1.74
-let initialLoadCompletionCount = 0
-
-let selectedCollege = null
-let dataFilters = {
-    parentSesQuartile: null,
-    friendingBiasQuartile: null
-}
-
 /**
  * ==[ CONSTANTS ]======================================================================================================
  */
@@ -20,6 +5,26 @@ let dataFilters = {
 const TOTAL_CHART_COUNT = 5
 const DO_NOT_SHOW_INTRO_MODAL_KEY = 'doNotShowIntroModal'
 const USE_THEME_KEY = 'useTheme'
+const MAX_BISLIDER_VALUE = 1.74
+
+/**
+ * ==[ VARIABLES ]======================================================================================================
+ */
+
+let allData;
+let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
+
+const dispatcher = d3.dispatch('completedInitialLoad', 'filterData')
+
+let isDarkMode = false
+let bisliderParentSesValue = MAX_BISLIDER_VALUE
+let initialLoadCompletionCount = 0
+
+let selectedCollege = null
+let dataFilters = {
+    parentSesQuartile: null,
+    friendingBiasQuartile: null
+}
 
 /**
  * ==[ HELPERS ]========================================================================================================
@@ -203,5 +208,14 @@ setupDarkModeSwitch()
 d3.select('#parent-ses-slider')
     .on('input', (event) => {
         bisliderParentSesValue = event.target.value
+        updateGraphs()
+    })
+
+// Reset values and sliders when clear filters button is clicked
+d3.select('#clear-filters')
+    .on('click', (_event) => {
+        dataFilters = {parentSesQuartile: null, friendingBiasQuartile: null}
+        bisliderParentSesValue = MAX_BISLIDER_VALUE
+        document.getElementById('parent-ses-slider').value = MAX_BISLIDER_VALUE
         updateGraphs()
     })

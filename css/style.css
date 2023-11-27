@@ -3,11 +3,12 @@
 :root {
     --white: #fff;
     --light-gray: #f8f8f8;
+    --dark-gray: #777;
     --black: #000;
-    --hover-shadow: rgb(0 0 0 / 0.1);
+    --hover-shadow: rgb(0 0 0 / 0.2);
     --background-color: #ECE7E4;
-    --background-color-darker: #E6DFDB;
-    --background-color-darkest: #DDD4CF;
+    --background-color-darker: #DDD4CF;
+    --background-color-darkest: #D5CAC3;
     --muted-text: #6B584C;
     --highlight: #7E95A0;
 }
@@ -15,6 +16,7 @@
 [data-theme="dark"] {
     --white: #000;
     --light-gray: #111;
+    --dark-gray: #CCC;
     --black: #fff;
     --hover-shadow: rgb(255 255 255 / 0.1);
     --background-color: #02111B;
@@ -223,7 +225,7 @@ h2 {
 }
 
 #intro-modal img {
-    filter: drop-shadow(0 0 0.25rem #CCC);
+    filter: drop-shadow(0 0 0.25rem var(--dark-gray));
     max-width: 50%;
     height: auto;
 }
@@ -241,9 +243,10 @@ h2 {
     gap: 16px;
 }
 
-#dont-show-again {
+.button.button-secondary {
     color: var(--muted-text);
     font-weight: bolder;
+    background-color: transparent;
     border: 2px solid var(--background-color-darkest);
     padding: 0 16px;
 }
@@ -258,6 +261,12 @@ h2 {
     font-size: 55px;
     margin: -12px 1px 0;
     pointer-events: none;
+}
+
+#clear-filters {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
 }
 
 /* ==[ tooltips ]==================================================================================================== */

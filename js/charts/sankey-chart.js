@@ -293,7 +293,6 @@ class SankeyChart {
                     .attr('class', d => {
                     let classNames = 'sankey-node clickable'
                     if (selectedParentSesQ || selectedFriendingBiasQ) {
-                        debugger
                         classNames += [selectedParentSesQ, selectedFriendingBiasQ].includes(d.category)
                             ? ' focused'
                             : ' not-focused'
