@@ -9,6 +9,7 @@
     --background-color-darker: #E6DFDB;
     --background-color-darkest: #DDD4CF;
     --muted-text: #6B584C;
+    --highlight: #7E95A0;
 }
 
 [data-theme="dark"] {
@@ -20,6 +21,7 @@
     --background-color-darker: #042439;
     --background-color-darkest: #06304C;
     --muted-text: #8DCCF6;
+    --highlight: #C58B59;
 }
 
 /* ==[ index.html ]================================================================================================== */
@@ -32,6 +34,19 @@ body {
     background-color: var(--background-color);
     color: var(--black);
     overflow-y: scroll;
+}
+
+h1 {
+    font-family: 'Amatic SC', sans-serif;
+    font-size: 72px;
+    margin: 8px 0 2px 0;
+    border-top: 8px solid var(--highlight);
+    border-bottom: 8px solid var(--highlight);
+}
+
+h2 {
+    margin: 18px 0 0 0;
+    font-weight: 600;
 }
 
 #header {
@@ -80,8 +95,9 @@ body {
 /* ==[ toolbar ]===================================================================================================== */
 
 #toolbar {
-    position: absolute;
+    position: fixed;
     right: 16px;
+    top: 16px;
     display: flex;
     gap: 10px;
 }
