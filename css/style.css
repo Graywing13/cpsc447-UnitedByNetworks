@@ -9,7 +9,6 @@
     --background-color-darker: #E6DFDB;
     --background-color-darkest: #DDD4CF;
     --muted-text: #6B584C;
-    --green: #55af2a;
 }
 
 [data-theme="dark"] {
@@ -21,7 +20,6 @@
     --background-color-darker: #042439;
     --background-color-darkest: #06304C;
     --muted-text: #8DCCF6;
-    --green: #55af2a;
 }
 
 /* ==[ index.html ]================================================================================================== */
@@ -111,7 +109,8 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    background-color: var(--background-color-darker);
+    background-color: #E6DFDB; /* hardcode value to prevent screen flash */
+    color: #000000; /* hardcode value to prevent screen flash */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -149,7 +148,7 @@ body {
     width: 100%;
     flex-grow: 1;
     height: 3px;
-    background-color: var(--light-gray)
+    background-color: #F8F8F8; /* hardcode value to prevent screen flash */
 }
 
 @keyframes loadingAnimation {
@@ -162,7 +161,7 @@ body {
 }
 
 .span-line-filled {
-    background-color: var(--green);
+    background-color: #55AF2A;
     position: absolute;
     height: 100%;
     width: 0;

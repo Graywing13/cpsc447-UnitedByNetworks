@@ -13,10 +13,12 @@ let initialLoadCompletionCount = 0
 
 const TOTAL_CHART_COUNT = 5
 const DO_NOT_SHOW_INTRO_MODAL_KEY = 'doNotShowIntroModal'
+const USE_THEME_KEY = 'useTheme'
 
 /**
  * ==[ HELPERS ]========================================================================================================
  */
+
 // Update all graphs with new data / new filter change
 function updateGraphs() {
     const filteredData = allData // TODO edit as needed
@@ -36,6 +38,7 @@ function updateGraphs() {
  * ==[ DISPATCH HANDLERS ]==============================================================================================
  */
 
+// Handler that is called whenever a chart has finished rendering
 dispatcher.on('completedInitialLoad', _chartName => {
     // Update the amount of elements loaded
     initialLoadCompletionCount++
@@ -47,6 +50,7 @@ dispatcher.on('completedInitialLoad', _chartName => {
     }
 })
 
+// Applies filters when sankey link is selected
 dispatcher.on('sankeyLinkSelected', data => {
         const {parentSesQuartile, friendingBiasQuartile} = data
         alert(`main.js will filter for:\n- Parent SES Q${parentSesQuartile} \n- Friending Bias Q${friendingBiasQuartile}`)
@@ -56,7 +60,8 @@ dispatcher.on('sankeyLinkSelected', data => {
 /**
  * ==[ LOAD DATA ]======================================================================================================
  */
-// TODO some of these variables may not be needed
+
+// Attributes used in the site (most are used in the small multiples scatterplots)
 const numericalAttributes = [
     'mean_students_per_cohort',
     'ec_own_ses_college,',
@@ -77,6 +82,8 @@ const numericalAttributes = [
     'lon',
     'change_ses'
 ]
+
+// Load and process data
 d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     data.forEach(d => {
         numericalAttributes.forEach((numAttr) => {
@@ -111,6 +118,7 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
                 parentElement: '#small-multiples-scatterplots'
             }, dispatcher)
 
+            // Update data of graphs, and call updateVis()
             updateGraphs()
         })
     })
@@ -148,6 +156,7 @@ d3.select('#dont-show-again')
  * ==[ OTHER LOGIC ]====================================================================================================
  */
 
+// Make switch display right text, append click listener
 function setupDarkModeSwitch() {
     d3.select('#dark-mode-switch')
         .select('p')
@@ -155,11 +164,18 @@ function setupDarkModeSwitch() {
     d3.select('#dark-mode-switch')
         .on('click', () => {
             isDarkMode = !isDarkMode
-            document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+            const newMode = isDarkMode ? 'dark' : 'light'
+            document.querySelector(":root").setAttribute('data-theme', newMode);
+            window.localStorage.setItem(USE_THEME_KEY, newMode)
             setupDarkModeSwitch()
         })
 }
 
+// Initialize theme & switch's text
+if (window.localStorage.getItem(USE_THEME_KEY) === 'dark') {
+    isDarkMode = true
+    document.querySelector(":root").setAttribute('data-theme', 'dark');
+}
 setupDarkModeSwitch()
 
 d3.select('#parent-ses-slider')
