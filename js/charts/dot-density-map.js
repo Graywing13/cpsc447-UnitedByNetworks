@@ -32,7 +32,6 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + vis.config.margin.right - 100)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
             .attr('text-anchor', 'middle')
-            .attr('fill', 'orangered')
             .text('Amount of inter-SES friends');
 
         vis.svg.append('text')
@@ -40,7 +39,6 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + 210)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
             .attr('text-anchor', 'end')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('low');
 
@@ -49,7 +47,6 @@ class DotDensityMap {
             .attr('x', vis.width / 2 - 40)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
             .attr('text-anchor', 'start')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('low');
 
@@ -58,7 +55,6 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + 120)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
             .attr('text-anchor', 'end')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('high');
 
@@ -68,7 +64,6 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + 315)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
             .attr('text-anchor', 'start')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('high');
 
@@ -102,7 +97,6 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + vis.config.margin.right + 120)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
             .attr('text-anchor', 'middle')
-            .attr('fill', 'orangered')
             .text('Amount of mutual friends');
     }
 

@@ -354,3 +354,9 @@ h2 {
 .axis-title {
     font-size: 11px;
 }
+
+/* ==[ small multiples scatterplot ]============================================================================= */
+
+.label {
+    fill: var(--black);
+}
