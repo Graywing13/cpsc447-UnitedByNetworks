@@ -107,10 +107,10 @@ class DotDensityMap {
     }
 
     updateVis() {
-        // TODO: Any update logic if needed
+        let vis = this
 
         // Render the visualization
-        this.renderVis()
+        vis.renderVis()
     }
 
     renderVis() {
@@ -127,18 +127,20 @@ class DotDensityMap {
         // Bind data and create path elements for each state
         vis.svg.selectAll('path')
             .data(vis.stateBorders)
-            .enter().append('path')
-            .attr('d', path)
-            .attr('stroke', '#000')
-            .attr('stroke-width', 1)
-            .attr('fill', '#fff')
+            .join(enter => enter.append('path')
+                .attr('d', path)
+                .attr('stroke', '#000')
+                .attr('stroke-width', 1)
+                .attr('fill', '#fff')
+            )
 
         // Bind data and create a group for each college
         const collegeGroups = vis.svg.selectAll('.college')
-            .data(vis.collegeData)
-            .enter().append('g')
-            .attr('class', 'college')
-            .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] + 10})`)
+            .data(vis.collegeData, d => d.college)
+            .join(enter => enter.append('g')
+                .attr('class', 'college')
+                .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] + 10})`)
+            )
 
         const colourScale = d3.scaleLinear()
             .domain([0.099, 0.82])

@@ -17,7 +17,7 @@ class SankeyChart {
     constructor(_config, dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 360,
+            containerWidth: _config.containerWidth || 600,
             containerHeight: _config.containerHeight || 240,
             margin: _config.margin || {
                 top: 40,
@@ -28,6 +28,7 @@ class SankeyChart {
             tooltipPadding: _config.tooltipPadding || 15
         }
         this.dispatcher = dispatcher
+        this.dataFilters = {}
         this.initVis()
     }
 
@@ -108,7 +109,7 @@ class SankeyChart {
             .nodeId(d => d.name)
             .nodeWidth(15)
             .nodePadding(10)
-            .extent([[1, 5], [vis.width - 1, vis.height - 5]])
+            .extent([[200, 0], [vis.width - 200, vis.height]])
             .nodeSort(null)
             .linkSort((a, b) => {
                 const sortingValueA = a.source.index * 10 + a.target.index
@@ -193,6 +194,11 @@ class SankeyChart {
     renderVis() {
         let vis = this
 
+        // Determine the selected quartiles if they exist
+        const {parentSesQuartile, friendingBiasQuartile} = vis.dataFilters
+        const selectedParentSesQ = parentSesQuartile && `parentSesQ${parentSesQuartile}`
+        const selectedFriendingBiasQ = friendingBiasQuartile && `friendingBiasQ${friendingBiasQuartile}`
+
         // Create links (must occur first so that text displays on top)
         vis.linkMarks = vis.chart.selectAll('.sankey-link-group')
             .data(vis.sankeyLinks, d => d.uid)
@@ -225,7 +231,7 @@ class SankeyChart {
                                 parentSesQuartile: +d.source.name.slice(-1),
                                 friendingBiasQuartile: +d.target.name.slice(-1)
                             }
-                            vis.dispatcher.call('sankeyLinkSelected', null, data)
+                            vis.dispatcher.call('filterData', null, data)
                         })
 
                     // Add tooltip-type label
@@ -233,7 +239,14 @@ class SankeyChart {
 
                     return groups
                 },
-                update => update,
+                update => update.selectAll('path')
+                    .attr('class', d => {
+                        if ((selectedParentSesQ && d.source.category !== selectedParentSesQ)
+                            || (selectedFriendingBiasQ && d.target.category !== selectedFriendingBiasQ)) {
+                            return 'sankey-link clickable not-focused'
+                        }
+                        return 'sankey-link clickable'
+                    }),
                 exit => exit.remove()
             )
 
@@ -251,6 +264,15 @@ class SankeyChart {
                         .attr('height', d => d.y1 - d.y0)
                         .attr('width', d => d.x1 - d.x0)
                         .attr('fill', d => SANKEY_COLORS[d.category])
+                        .on('click', (event, d) => {
+                            // Gets the category to filter on (i.e. friendingBiasQuartile or parentSesQuartile)
+                            const filterName = `${d.category.split('Q')[0]}Quartile`
+                            // Gets the quartile
+                            const quartileValue = +d.category.slice(-1)
+
+                            const data = {[filterName]: quartileValue}
+                            vis.dispatcher.call('filterData', null, data)
+                        })
 
                     // Add tooltip-type label
                     const tooltips = nodes.append('title').text(d => `${d.name}`)
@@ -258,25 +280,29 @@ class SankeyChart {
                     // Add node labels
                     const labels = groups.append('text')
                         .attr('class', 'sankey-node-label')
-                        .attr('x', d => d.x0 < vis.width / 2 ? d.x1 + 6 : d.x0 - 6)
+                        .attr('x', d => d.x0 < vis.width / 2 ? d.x0 - 8 : d.x1 + 8)
                         .attr('y', d => (d.y1 + d.y0) / 2)
                         .attr('dy', '0.35em')
-                        .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'start' : 'end')
+                        .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'end' : 'start')
                         .text(d => d.label)
                         .raise()
 
                     return groups
                 },
-                update => {
-                    console.log(update)
-                    return update
-                },
-                exit => {
-                    console.log(exit)
-                    return exit
-                }
+                update => update.selectAll('rect')
+                    .attr('class', d => {
+                    let classNames = 'sankey-node clickable'
+                    if (selectedParentSesQ || selectedFriendingBiasQ) {
+                        debugger
+                        classNames += [selectedParentSesQ, selectedFriendingBiasQ].includes(d.category)
+                            ? ' focused'
+                            : ' not-focused'
+                    }
+                    return classNames
+                }),
+                exit => exit
             )
-        
+
         // Notify main.js that rendering is done
         vis.dispatcher.call('completedInitialLoad', null, "sankey");
     }

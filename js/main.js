@@ -1,11 +1,17 @@
 let allData;
 let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
 
-const dispatcher = d3.dispatch('completedInitialLoad', 'sankeyLinkSelected')
+const dispatcher = d3.dispatch('completedInitialLoad', 'filterData')
 
 let isDarkMode = false
 let bisliderParentSesValue = 1.74
 let initialLoadCompletionCount = 0
+
+let selectedCollege = null
+let dataFilters = {
+    parentSesQuartile: null,
+    friendingBiasQuartile: null
+}
 
 /**
  * ==[ CONSTANTS ]======================================================================================================
@@ -19,16 +25,24 @@ const USE_THEME_KEY = 'useTheme'
  * ==[ HELPERS ]========================================================================================================
  */
 
-// Update all graphs with new data / new filter change
 function updateGraphs() {
-    const filteredData = allData // TODO edit as needed
+    // filter data
+    const {parentSesQuartile, friendingBiasQuartile} = dataFilters
+    const filteredData = allData.filter((d) => {
+        return (!parentSesQuartile || d.ec_parent_ses_college_quartile === parentSesQuartile)
+            && (!friendingBiasQuartile || d.bias_own_ses_college_quartile === friendingBiasQuartile)
+    })
 
-    dotDensityMap.data = filteredData
+    // Update with new data
+    dotDensityMap.collegeData = filteredData
     dotDensityMap.updateVis()
 
-    sankeyChart.data = filteredData
+    // Sankey always displays all data, but the opacity of the marks change
+    sankeyChart.data = allData
+    sankeyChart.dataFilters = dataFilters
     sankeyChart.updateVis()
 
+    // Update all graphs with new data, or with new filter change
     smallMultiplesScatterplotsWrapper.data = filteredData
     smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
     smallMultiplesScatterplotsWrapper.updateVis()
@@ -50,12 +64,20 @@ dispatcher.on('completedInitialLoad', _chartName => {
     }
 })
 
-// Applies filters when sankey link is selected
-dispatcher.on('sankeyLinkSelected', data => {
-        const {parentSesQuartile, friendingBiasQuartile} = data
-        alert(`main.js will filter for:\n- Parent SES Q${parentSesQuartile} \n- Friending Bias Q${friendingBiasQuartile}`)
+// Applies filters when sankey links/nodes is selected
+dispatcher.on('filterData', newDataFilters => {
+    const parentSesIsEqual = dataFilters.parentSesQuartile === newDataFilters.parentSesQuartile
+    const friendingBiasIsEqual = dataFilters.friendingBiasQuartile === newDataFilters.friendingBiasQuartile
+    
+    if (parentSesIsEqual && friendingBiasIsEqual) {
+        // if the filters are the same, that means a selected node was deselected; reset filters
+        dataFilters = {parentSesQuartile: null, friendingBiasQuartile: null}
+    } else {
+        // otherwise, set the new filter
+        dataFilters = newDataFilters
     }
-)
+    updateGraphs()
+})
 
 /**
  * ==[ LOAD DATA ]======================================================================================================

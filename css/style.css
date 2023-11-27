@@ -315,6 +315,10 @@ h2 {
     stroke-opacity: 0.5;
 }
 
+.sankey-link.not-focused {
+    stroke-opacity: 0.2;
+}
+
 .sankey-link:hover {
     stroke-opacity: 0.9;
 }
@@ -322,6 +326,21 @@ h2 {
 .sankey-node-label {
     pointer-events: none;
     fill: var(--black);
+}
+
+.sankey-node {
+    stroke: none;
+    opacity: 1;
+}
+
+.sankey-node.focused {
+    opacity: 1;
+    stroke: var(--highlight);
+    stroke-width: 2px;
+}
+
+.sankey-node.not-focused {
+    opacity: 0.3;
 }
 
 /* ==[ small multiples scatterplot ]============================================================================= */
