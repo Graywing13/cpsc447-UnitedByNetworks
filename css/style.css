@@ -204,8 +204,8 @@ h2 {
 /* ==[ intro modal ]================================================================================================= */
 
 #intro-modal {
-    z-index: 50;
-    background-color: var(--background-color-darker);
+        z-index: 50;
+    background: linear-gradient(125deg, var(--background-color-darkest), var(--background-color));
     box-shadow: 10px 10px var(--hover-shadow), -1em 0 .4em var(--light-gray);
     width: 80%;
     height: 80%;
@@ -271,7 +271,7 @@ h2 {
 
     background: var(--light-gray);
     box-shadow: 2px 2px 5px 4px var(--hover-shadow);
-    padding: 8px;
+    padding: 16px;
 
     border-radius: 4px;
 
@@ -282,7 +282,9 @@ h2 {
 
 .tooltip-title {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 20px;
+    font-family: 'Amatic SC', sans-serif;
+    text-align: center;
 }
 
 /* ==[ shared ]====================================================================================================== */
