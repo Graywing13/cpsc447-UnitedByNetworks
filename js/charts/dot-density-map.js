@@ -1,3 +1,5 @@
+const PURPLE = '#7b0698'
+const YELLOW = '#fff538'
 class DotDensityMap {
     constructor(_config, dispatcher) {
         this.config = {
@@ -7,7 +9,7 @@ class DotDensityMap {
             margin: _config.margin || {
                 top: 30,
                 right: 150,
-                bottom: 100,
+                bottom: 120,
                 left: -120
             }
         }
@@ -32,33 +34,29 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + vis.config.margin.right - 100)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
             .attr('text-anchor', 'middle')
-            .attr('fill', 'orangered')
-            .text('Amount of inter-SES friends');
+            .text('Amount of mutual friends');
 
         vis.svg.append('text')
             .attr('class', 'label')
             .attr('x', vis.width / 2 + 210)
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'end')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('low');
 
         vis.svg.append('text')
             .attr('class', 'label')
             .attr('x', vis.width / 2 - 40)
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'start')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('low');
 
         vis.svg.append('text')
             .attr('class', 'label')
-            .attr('x', vis.width / 2 + 120)
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
+            .attr('x', vis.width / 2 + 135)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'end')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('high');
 
@@ -66,9 +64,8 @@ class DotDensityMap {
         vis.svg.append('text')
             .attr('class', 'label')
             .attr('x', vis.width / 2 + 315)
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 82)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'start')
-            .attr('fill', 'black')
             .style('font-weight', 'bold')
             .text('high');
 
@@ -83,15 +80,15 @@ class DotDensityMap {
 
         gradient.append('stop')
             .attr('offset', '0%')
-            .style('stop-color', 'purple');
+            .style('stop-color', PURPLE);
 
         gradient.append('stop')
             .attr('offset', '100%')
-            .style('stop-color', 'yellow');
+            .style('stop-color', YELLOW);
 
         vis.svg.append('rect')
             .attr('x', vis.width / 2 + 187)
-            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 55)
+            .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 70)
             .attr('width', 150)
             .attr('height', 15)
             .style('fill', 'url(#color-gradient)');
@@ -99,21 +96,17 @@ class DotDensityMap {
         // Add a label to the right
         vis.svg.append('text')
             .attr('class', 'label')
-            .attr('x', vis.width / 2 + vis.config.margin.right + 120)
+            .attr('x', vis.width / 2 + vis.config.margin.right + 75)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
             .attr('text-anchor', 'middle')
-            .attr('fill', 'orangered')
-            .text('Amount of mutual friends');
-
-        // Call the update function to render the map
-        vis.updateVis()
+            .text('Student SES');
     }
 
     updateVis() {
-        // TODO: Any update logic if needed
+        let vis = this
 
         // Render the visualization
-        this.renderVis()
+        vis.renderVis()
     }
 
     renderVis() {
@@ -130,43 +123,49 @@ class DotDensityMap {
         // Bind data and create path elements for each state
         vis.svg.selectAll('path')
             .data(vis.stateBorders)
-            .enter().append('path')
-            .attr('d', path)
-            .attr('stroke', '#000')
-            .attr('stroke-width', 1)
-            .attr('fill', '#fff')
+            .join(enter => enter.append('path')
+                .attr('d', path)
+                .attr('stroke', '#000')
+                .attr('stroke-width', 1)
+                .attr('fill', '#fff')
+            )
 
         // Bind data and create a group for each college
         const collegeGroups = vis.svg.selectAll('.college')
-            .data(vis.collegeData)
-            .enter().append('g')
-            .attr('class', 'college')
-            .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] + 10})`)
+            .data(vis.collegeData, d => d.college)
+            .join(enter => enter.append('g')
+                .attr('class', 'college')
+                .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] + 10})`)
+            )
 
         const colourScale = d3.scaleLinear()
-            .domain([0.099, 0.82])
-            .range(['purple', 'yellow']);
+            .domain([0.21, 1.91])
+            .range([PURPLE, YELLOW]);
 
-        // Add circles under the "Amount of inter-SES friends" label
+        // Add circles under the "Amount of mutual friends" label
         const circleData = [0.8, 1.8, 2.8, 3.8, 4.8];
 
         vis.svg.selectAll('.circle')
             .data(circleData)
             .enter().append('circle')
             .attr('class', 'circle')
-            .attr('cx', (d, i) => vis.width / 2 - 30 + i * 30)
-            .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 60)
+            .attr('cx', (d, i) => vis.width / 2 - 25 + i * 35)
+            .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 77)
             .attr('r', d => d * 2)
             .attr('fill', 'orangered');
 
         // Create a scale for mapping bias_own_ses_college values to circle radius
-        const radiusScale = d3.scaleLinear()
-            .domain([-0.16, 0.38])
+        const radiusScale = d3.scaleLinear() 
+            .domain([0.099, 0.82])
             .range([1, 10]);
 
         // Append a circle for each college within its group
         collegeGroups.append('circle')
-            .attr('r', d => radiusScale(d.bias_own_ses_college))
-            .attr('fill', d => colourScale(d.clustering_college || 0));
+            .attr('r', d => radiusScale(d.clustering_college))
+            .attr('fill', d => colourScale(d.ec_own_ses_college || 0))
+            .style('opacity', 0.7);
+        
+        // Notify main.js that rendering is done
+        vis.dispatcher.call('completedInitialLoad', null, "dot density map");
     }
 }

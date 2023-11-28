@@ -1,18 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Social Connectedness Across US Colleges</title>
+    <title>United by Networks: Visualizing Social Capital Trends Across US Colleges</title>
     <meta charset="UTF-8">
-    <link rel="icon" href="data:;base64,iVBORwOKGO="/>
+    <link rel="icon" href="./images/ses_descriptor_happy.png"/>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amatic+SC">
     <!-- Included packages -->
     <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.1.0/dist/simple-statistics.min.js"></script>
 </head>
 <body>
+
+<!-- Loading screen -->
+<div id="loading">
+    <h3>Loading...</h3>
+    <div id="loading-bar">
+        <div class="span-line">
+            <div id="span-line-left" class="span-line-filled"></div>
+        </div>
+        <p id="load-percentage">0%</p>
+        <div class="span-line">
+            <div id="span-line-right" class="span-line-filled"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Intro modal -->
+<div id="intro-modal">
+    <img src="./images/ses_descriptor.png" alt="ses-description-graphic">
+    <div class="text-div">
+        <h3>Social Capital represents</h3>
+        <p>
+            the potency of a person's social network and their connection to the community.
+            Numerous individuals have contended that it plays a pivotal role in facilitating upward mobility,
+            underscoring the vital role of social capital and the potential of <strong>social
+            interconnectedness</strong> in enhancing our communities.
+            To contribute to the understanding of this critical dimension of society,
+            our visualization offers insights into social capital across colleges throughout the United States.
+        </p>
+    </div>
+    <div class="pull-top-right">
+        <div id="dont-show-again" class="button button-secondary"
+             title="Unless requested via the question button, hide this modal.">
+            Don't show again
+        </div>
+        <div id="close-intro-modal-button" class="button icon-button"><p>×</p></div>
+    </div>
+</div>
+
 <!-- HTML content and SVG drawing area -->
 <div id="header">
-    <h1>Social Connectedness Across US Colleges</h1>
-    <button id="dark-mode-switch"></button>
+    <div>
+        <h1>United by Networks</h1>
+        <h2>Visualizing Social Capital Trends Across US Colleges</h2>
+    </div>
+    <div id="toolbar">
+        <div id="dark-mode-switch" class="button button-secondary">Theme:<p></p></div>
+        <div id="open-intro-modal-button" class="button icon-button">?</div>
+        <div class="button" id="clear-filters">Clear filters</div>
+    </div>
 </div>
 <div id="content">
     <div id="content-left">

@@ -1,24 +1,53 @@
+/**
+ * ==[ CONSTANTS ]======================================================================================================
+ */
+
+const TOTAL_CHART_COUNT = 5
+const DO_NOT_SHOW_INTRO_MODAL_KEY = 'doNotShowIntroModal'
+const USE_THEME_KEY = 'useTheme'
+const MAX_BISLIDER_VALUE = 1.74
+
+/**
+ * ==[ VARIABLES ]======================================================================================================
+ */
+
 let allData;
 let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
 
-const dispatcher = d3.dispatch('placeholder', 'sankeyLinkSelected')
+const dispatcher = d3.dispatch('completedInitialLoad', 'filterData')
 
 let isDarkMode = false
-let bisliderParentSesValue = 1.74
+let bisliderParentSesValue = MAX_BISLIDER_VALUE
+let initialLoadCompletionCount = 0
+
+let selectedCollege = null
+let dataFilters = {
+    parentSesQuartile: null,
+    friendingBiasQuartile: null
+}
 
 /**
  * ==[ HELPERS ]========================================================================================================
  */
-// Update all graphs with new data / new filter change
-function updateGraphs() {
-    const filteredData = allData // TODO edit as needed
 
-    dotDensityMap.data = filteredData
+function updateGraphs() {
+    // filter data
+    const {parentSesQuartile, friendingBiasQuartile} = dataFilters
+    const filteredData = allData.filter((d) => {
+        return (!parentSesQuartile || d.ec_parent_ses_college_quartile === parentSesQuartile)
+            && (!friendingBiasQuartile || d.bias_own_ses_college_quartile === friendingBiasQuartile)
+    })
+
+    // Update with new data
+    dotDensityMap.collegeData = filteredData
     dotDensityMap.updateVis()
 
-    sankeyChart.data = filteredData
+    // Sankey always displays all data, but the opacity of the marks change
+    sankeyChart.data = allData
+    sankeyChart.dataFilters = dataFilters
     sankeyChart.updateVis()
 
+    // Update all graphs with new data, or with new filter change
     smallMultiplesScatterplotsWrapper.data = filteredData
     smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
     smallMultiplesScatterplotsWrapper.updateVis()
@@ -27,21 +56,39 @@ function updateGraphs() {
 /**
  * ==[ DISPATCH HANDLERS ]==============================================================================================
  */
-// TODO delete placeholder
-dispatcher.on('placeholder', str => {
-    console.log(`${str} called dispatch`)
+
+// Handler that is called whenever a chart has finished rendering
+dispatcher.on('completedInitialLoad', _chartName => {
+    // Update the amount of elements loaded
+    initialLoadCompletionCount++
+    d3.select('#load-percentage').text(`${initialLoadCompletionCount * 20} %`)
+
+    // If everything is done loading, hide the loading screen
+    if (initialLoadCompletionCount === TOTAL_CHART_COUNT) {
+        d3.select('#loading').attr('class', 'invisible')
+    }
 })
 
-dispatcher.on('sankeyLinkSelected', data => {
-        const {parentSesQuartile, friendingBiasQuartile} = data
-        alert(`main.js will filter for:\n- Parent SES Q${parentSesQuartile} \n- Friending Bias Q${friendingBiasQuartile}`)
+// Applies filters when sankey links/nodes is selected
+dispatcher.on('filterData', newDataFilters => {
+    const parentSesIsEqual = dataFilters.parentSesQuartile === newDataFilters.parentSesQuartile
+    const friendingBiasIsEqual = dataFilters.friendingBiasQuartile === newDataFilters.friendingBiasQuartile
+    
+    if (parentSesIsEqual && friendingBiasIsEqual) {
+        // if the filters are the same, that means a selected node was deselected; reset filters
+        dataFilters = {parentSesQuartile: null, friendingBiasQuartile: null}
+    } else {
+        // otherwise, set the new filter
+        dataFilters = newDataFilters
     }
-)
+    updateGraphs()
+})
 
 /**
  * ==[ LOAD DATA ]======================================================================================================
  */
-// TODO some of these variables may not be needed
+
+// Attributes used in the site (most are used in the small multiples scatterplots)
 const numericalAttributes = [
     'mean_students_per_cohort',
     'ec_own_ses_college,',
@@ -62,6 +109,8 @@ const numericalAttributes = [
     'lon',
     'change_ses'
 ]
+
+// Load and process data
 d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     data.forEach(d => {
         numericalAttributes.forEach((numAttr) => {
@@ -74,50 +123,99 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
     d3.json('data/us-state-boundaries.geojson').then(function (us) {
         const stateBorders = us.features
 
-        // Initialize Dot Density Map
-        dotDensityMap = new DotDensityMap({
-            parentElement: '#dot-density-map',
-            stateBorders: stateBorders,
-            collegeData: allData
-        }, dispatcher)
+        // Load US State Boundaries data
+        d3.json('data/us-state-boundaries.geojson').then(function (us) {
+            const stateBorders = us.features
 
-        // Initialize Sankey
-        sankeyChart = new SankeyChart(
-            {parentElement: '#sankey-div'},
-            dispatcher
-        )
+            // Initialize Dot Density Map
+            dotDensityMap = new DotDensityMap({
+                parentElement: '#dot-density-map',
+                stateBorders: stateBorders,
+                collegeData: allData
+            }, dispatcher)
 
-        // Initialize Small Multiples Scatterplots 
-        smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
-            parentElement: '#small-multiples-scatterplots'
-        }, dispatcher)
+            // Initialize Sankey
+            sankeyChart = new SankeyChart(
+                {parentElement: '#sankey-div'},
+                dispatcher
+            )
 
-        updateGraphs()
+            // Initialize Small Multiples Scatterplots 
+            smallMultiplesScatterplotsWrapper = new SmallMultiplesScatterplots({
+                parentElement: '#small-multiples-scatterplots'
+            }, dispatcher)
+
+            // Update data of graphs, and call updateVis()
+            updateGraphs()
+        })
     })
 })
+
+/**
+ * ==[ INTRO MODAL ]====================================================================================================
+ */
+
+// If the user had clicked "Don't show again", hide the intro modal on load
+if (window.localStorage.getItem(DO_NOT_SHOW_INTRO_MODAL_KEY) === 'true') {
+    d3.select('#intro-modal').style('visibility', 'hidden')
+}
+
+// Close intro modal when [x] pressed
+d3.select('#close-intro-modal-button')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'hidden')
+    })
+
+// Open intro modal when [?] pressed
+d3.select('#open-intro-modal-button')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'visible')
+    })
+
+// If user clicks "don't show again", hide the modal and persist this preference
+d3.select('#dont-show-again')
+    .on('click', (_event) => {
+        d3.select('#intro-modal').style('visibility', 'hidden')
+        window.localStorage.setItem(DO_NOT_SHOW_INTRO_MODAL_KEY, 'true')
+    })
 
 /**
  * ==[ OTHER LOGIC ]====================================================================================================
  */
 
+// Make switch display right text, append click listener
 function setupDarkModeSwitch() {
     d3.select('#dark-mode-switch')
-        .text(`Switch to ${isDarkMode ? 'light' : 'dark'} mode`)
+        .select('p')
+        .text(`${isDarkMode ? 'Dark' : 'Light'}`)
+    d3.select('#dark-mode-switch')
         .on('click', () => {
             isDarkMode = !isDarkMode
-            document.querySelector(":root").setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+            const newMode = isDarkMode ? 'dark' : 'light'
+            document.querySelector(":root").setAttribute('data-theme', newMode);
+            window.localStorage.setItem(USE_THEME_KEY, newMode)
             setupDarkModeSwitch()
         })
 }
 
+// Initialize theme & switch's text
+if (window.localStorage.getItem(USE_THEME_KEY) === 'dark') {
+    isDarkMode = true
+    document.querySelector(":root").setAttribute('data-theme', 'dark');
+}
 setupDarkModeSwitch()
 
 d3.select('#parent-ses-slider')
     .on('input', (event) => {
         bisliderParentSesValue = event.target.value
-        
-        // TODO this should just call updateVis() once Sankey join is implemented correctly
-        smallMultiplesScatterplotsWrapper.data = allData
-        smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
-        smallMultiplesScatterplotsWrapper.updateVis()
+        updateGraphs()
+    })
+
+// Reset values and sliders when clear filters button is clicked
+d3.select('#clear-filters')
+    .on('click', (_event) => {
+        dataFilters = {parentSesQuartile: null, friendingBiasQuartile: null}
+        bisliderParentSesValue = MAX_BISLIDER_VALUE
+        document.getElementById('parent-ses-slider').value = MAX_BISLIDER_VALUE
+        updateGraphs()
     })

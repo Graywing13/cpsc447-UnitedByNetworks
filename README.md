@@ -2,6 +2,18 @@
 
 Notes
 - This is meant for a screen size of at least 1600x900, otherwise tooltips may be cut off.
+- Zoom may need to be reduced to ~75% to display all content
+
+Supported Features
+- Core Visualization: 
+  - Dot Density map 
+  - Sankey -- filter data in map & scatterplots by clicking links
+  - Small multiples scatterplot -- filter scatterplots' data with slider
+- Visualization aid: 
+  - Clear Filters button -- reset sankey filters & scatterplot slider
+  - Description modal -- with "Don't show again" to hide on load, and openable via help icon
+  - Light/dark mode -- to aid with luminance contrast
+  - Label tooltips (e.g. on Sankey's friending bias)
 
 Resources
 - D3 Sankey usage: 
@@ -20,3 +32,13 @@ Resources
     - https://csv.js.org/parse/examples/stream_pipe/
   - Changes
     - Mainly only used the stream setup listed in the sites; all other logic is written by us.
+
+Special thanks
+- StackOverflow
+  - Joining groups: https://stackoverflow.com/a/68201968
+- Image credits
+  - Cats in intro modal: https://i.pinimg.com/736x/ea/39/fc/ea39fc7a6e6ac52ab124f0d5802d8a0b.jpg
+- Colour help
+  - https://coolors.co/eeeae7-031826-cfa077-30292f-5d737e
+- Misc research
+  - CSS visibility fade: https://greywyvern.com/337
