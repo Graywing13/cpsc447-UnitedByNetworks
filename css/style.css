@@ -60,7 +60,7 @@ h2 {
 #content {
     display: flex;
     width: 100%;
-    gap: 16px;
+    gap: 96px;
     justify-content: center;
     box-sizing: border-box;
 }
@@ -264,9 +264,9 @@ h2 {
 }
 
 #clear-filters {
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
+    position: absolute;
+    bottom: -38px;
+    right: 0;
 }
 
 /* ==[ tooltips ]==================================================================================================== */
@@ -364,8 +364,13 @@ h2 {
     font-size: 11px;
 }
 
-/* ==[ small multiples scatterplot ]============================================================================= */
+/* ==[ dot density map ]============================================================================================= */
 
 .label {
     fill: var(--black);
+}
+
+#dot-density-map {
+    transform: scale(1.25);
+    margin-left: 80px;
 }
