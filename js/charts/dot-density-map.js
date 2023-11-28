@@ -135,7 +135,7 @@ class DotDensityMap {
             .data(vis.collegeData, d => d.college)
             .join(enter => enter.append('g')
                 .attr('class', 'college')
-                .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] + 10})`)
+                .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] - 1})`)
             )
 
         const colourScale = d3.scaleLinear()
