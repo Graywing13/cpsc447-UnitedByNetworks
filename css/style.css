@@ -4,6 +4,7 @@
     --white: #fff;
     --light-gray: #f8f8f8;
     --dark-gray: #777;
+    --darker-gray: #333;
     --black: #000;
     --hover-shadow: rgb(0 0 0 / 0.2);
     --background-color: #ECE7E4;
@@ -17,6 +18,7 @@
     --white: #000;
     --light-gray: #111;
     --dark-gray: #CCC;
+    --darker-gray: #EEE;
     --black: #fff;
     --hover-shadow: rgb(255 255 255 / 0.1);
     --background-color: #02111B;
@@ -94,11 +96,19 @@ h2 {
     background-color: var(--hover-shadow) !important;
 }
 
+.button.button-secondary {
+    color: var(--muted-text);
+    font-weight: bolder;
+    background-color: transparent;
+    border: 2px solid var(--background-color-darkest);
+    padding: 0 16px;
+}
+
 /* ==[ toolbar ]===================================================================================================== */
 
 #toolbar {
     position: absolute;
-    right: 16px;
+    right: 152px;
     top: 16px;
     display: flex;
     gap: 10px;
@@ -110,6 +120,7 @@ h2 {
 
 #dark-mode-switch {
     padding: 0 20px;
+    font-weight: normal;
 }
 
 #dark-mode-switch > p {
@@ -243,14 +254,6 @@ h2 {
     gap: 16px;
 }
 
-.button.button-secondary {
-    color: var(--muted-text);
-    font-weight: bolder;
-    background-color: transparent;
-    border: 2px solid var(--background-color-darkest);
-    padding: 0 16px;
-}
-
 #close-intro-modal-button {
     width: 50px;
     height: 50px;
@@ -264,9 +267,18 @@ h2 {
 }
 
 #clear-filters {
-    position: absolute;
-    bottom: -38px;
-    right: 0;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 0 20px;
+    font-weight: bolder;
+    color: var(--darker-gray);
+}
+
+#dont-show-again {
+    font-weight: normal;
 }
 
 /* ==[ tooltips ]==================================================================================================== */

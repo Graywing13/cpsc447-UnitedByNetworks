@@ -91,8 +91,8 @@ class SankeyChart {
             .on('mouseover', (event) => {
                 d3.select('#help-text')
                     .style('display', 'block')
-                    .style('left', event.pageX + vis.config.tooltipPadding + 'px')
-                    .style('top', event.pageY + vis.config.tooltipPadding + 'px')
+                    .style('left', event.pageX - vis.config.tooltipPadding - 285 + 'px')
+                    .style('top', event.pageY + vis.config.tooltipPadding - 210 + 'px')
                     .html(`
                         <div class='tooltip-title'>Friending Bias</div>
                         <ul>
