@@ -7,7 +7,7 @@ class DotDensityMap {
             containerWidth: _config.containerWidth || 800,
             containerHeight: _config.containerHeight || 600,
             margin: _config.margin || {
-                top: 30,
+                top: 10,
                 right: 150,
                 bottom: 120,
                 left: -120
