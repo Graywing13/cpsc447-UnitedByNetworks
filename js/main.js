@@ -20,7 +20,7 @@ let isDarkMode = false
 let bisliderParentSesValue = MAX_BISLIDER_VALUE
 let initialLoadCompletionCount = 0
 
-// The selected college's data (an entire row of the csv)
+// The selected college's data (a processed data object that contains all attributes)
 let selectedCollege = null
 // Filters that are applied by sankey and affects the other views
 let dataFilters = {

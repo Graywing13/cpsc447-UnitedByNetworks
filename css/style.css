@@ -339,7 +339,7 @@ h2 {
 }
 
 .sankey-link.not-focused {
-    stroke-opacity: 0.2;
+    stroke-opacity: 0.15;
 }
 
 .sankey-link:hover {
@@ -358,7 +358,7 @@ h2 {
 
 .sankey-node.focused {
     opacity: 1;
-    stroke: var(--highlight);
+    stroke: var(--black) !important;
     stroke-width: 2px;
 }
 

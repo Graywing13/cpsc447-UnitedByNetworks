@@ -13,6 +13,8 @@ const SANKEY_COLORS = {
     friendingBiasQ1: '#79FF37'
 }
 
+const BLUE = '#60b1ef'
+
 class SankeyChart {
     constructor(_config, dispatcher) {
         this.config = {
@@ -29,6 +31,7 @@ class SankeyChart {
         }
         this.dispatcher = dispatcher
         this.dataFilters = {}
+        this.selectedCollege = null
         this.initVis()
     }
 
@@ -147,7 +150,8 @@ class SankeyChart {
                 return {
                     name: `${PARENT_SES_NAME_PREFIX}${parentSesQuartile}`,
                     category: `${PARENT_SES_CATEGORY_PREFIX}${parentSesQuartile}`,
-                    label: vis.getQuartileLabel(parentSesQuartile)
+                    label: vis.getQuartileLabel(parentSesQuartile),
+                    quartile: parentSesQuartile
                 }
             })
         const friendingBiasNodes = d3.rollups(vis.groupedData, v => d3.sum(v, d => d.count), d => d.friendingBiasQuartile)
@@ -157,7 +161,8 @@ class SankeyChart {
                 return {
                     name: `${FRIENDING_BIAS_NAME_PREFIX}${friendingBiasQuartile}`,
                     category: `${FRIENDING_BIAS_CATEGORY_PREFIX}${friendingBiasQuartile}`,
-                    label: `${vis.getQuartileLabel(friendingBiasQuartile)} bias`
+                    label: `${vis.getQuartileLabel(friendingBiasQuartile)} bias`,
+                    quartile: friendingBiasQuartile
                 }
             })
         const processedNodes = ([
@@ -224,12 +229,20 @@ class SankeyChart {
                     const paths = groups.append('path')
                         .attr('class', 'sankey-link clickable')
                         .attr('d', d3.sankeyLinkHorizontal())
-                        .attr('stroke', (d) => `url(#${d.uid})`)
+                        .attr('stroke', (d) => {
+                            if (vis.selectedCollege
+                                && d.source.quartile === vis.selectedCollege.ec_parent_ses_college_quartile
+                                && d.target.quartile === vis.selectedCollege.bias_own_ses_college_quartile) {
+                                return BLUE
+                            }
+                            
+                            return `url(#${d.uid})`
+                        })
                         .attr('stroke-width', d => Math.max(1, d.width))
                         .on('click', (event, d) => {
                             const data = {
-                                parentSesQuartile: +d.source.name.slice(-1),
-                                friendingBiasQuartile: +d.target.name.slice(-1)
+                                parentSesQuartile: +d.source.quartile,
+                                friendingBiasQuartile: +d.target.quartile
                             }
                             vis.dispatcher.call('filterData', null, data)
                         })
@@ -264,11 +277,25 @@ class SankeyChart {
                         .attr('height', d => d.y1 - d.y0)
                         .attr('width', d => d.x1 - d.x0)
                         .attr('fill', d => SANKEY_COLORS[d.category])
+                        .style('stroke', d => {
+                            // If a college is selected, outline the node quartiles it belongs to with blue
+                            if (vis.selectedCollege) {
+                                if (d.category.split('Q')[0] === 'parentSes') {
+                                    if (d.quartile === vis.selectedCollege.ec_parent_ses_college_quartile) {
+                                        return BLUE
+                                    }
+                                } else {
+                                    if (d.quartile === vis.selectedCollege.bias_own_ses_college_quartile) {
+                                        return BLUE
+                                    }
+                                }
+                            }
+                        })
                         .on('click', (event, d) => {
                             // Gets the category to filter on (i.e. friendingBiasQuartile or parentSesQuartile)
                             const filterName = `${d.category.split('Q')[0]}Quartile`
                             // Gets the quartile
-                            const quartileValue = +d.category.slice(-1)
+                            const quartileValue = +d.quartile
 
                             const data = {[filterName]: quartileValue}
                             vis.dispatcher.call('filterData', null, data)
@@ -291,14 +318,14 @@ class SankeyChart {
                 },
                 update => update.selectAll('rect')
                     .attr('class', d => {
-                    let classNames = 'sankey-node clickable'
-                    if (selectedParentSesQ || selectedFriendingBiasQ) {
-                        classNames += [selectedParentSesQ, selectedFriendingBiasQ].includes(d.category)
-                            ? ' focused'
-                            : ' not-focused'
-                    }
-                    return classNames
-                }),
+                        let classNames = 'sankey-node clickable'
+                        if (selectedParentSesQ || selectedFriendingBiasQ) {
+                            classNames += [selectedParentSesQ, selectedFriendingBiasQ].includes(d.category)
+                                ? ' focused'
+                                : ' not-focused'
+                        }
+                        return classNames
+                    }),
                 exit => exit
             )
 
