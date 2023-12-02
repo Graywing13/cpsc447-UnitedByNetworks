@@ -431,3 +431,12 @@ th {
     transform: scale(1.25);
     margin-left: 80px;
 }
+
+#tooltip {
+    position: absolute;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
