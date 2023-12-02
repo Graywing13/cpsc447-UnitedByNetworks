@@ -139,9 +139,12 @@ class DotDensityMap {
         // Bind data and create a group for each college
         const collegeGroups = vis.svg.selectAll('.college')
             .data(vis.collegeData, d => d.college)
-            .join('g')
-            .attr('class', 'college')
-            .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] - 1})`);
+            .join(enter => enter.append('g')
+                .attr('class', 'college')
+                .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] - 1})`)
+                .on('mouseout', () => hideTooltip())
+                .on('mousemove', (event, d) => showTooltip(event, d))
+            )
 
         const colourScale = d3.scaleLinear()
             .domain([0.21, 1.06, 1.91])
@@ -164,17 +167,17 @@ class DotDensityMap {
             .domain([0.0989, 0.660])
             .range([1, 10]);
 
-            const tooltip = d3.select('body')
+        const tooltip = d3.select('body')
             .append('div')
             .attr('id', 'tooltip')
 
         // Append a circle for each college within its group
-        collegeGroups.append('circle')
+        collegeGroups.selectAll('circle')
+            .data(d => [d])
+            .join('circle')
             .attr('r', d => radiusScale(d.clustering_college))
             .attr('fill', d => colourScale(d.ec_own_ses_college))
-            .style('opacity', 0.7)
-            .on('mouseover', (event, d) => showTooltip(event, d))
-            .on('mouseout', () => hideTooltip());
+            .style('opacity', 0.7);
 
         function showTooltip(event, d) {
             // Update tooltip content with data
