@@ -4,6 +4,7 @@ const YELLOW = '#fff538'
 class DotDensityMap {
     constructor(_config, dispatcher) {
         this.config = {
+            tooltipPadding: 10,
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 800,
             containerHeight: _config.containerHeight || 600,
@@ -82,7 +83,7 @@ class DotDensityMap {
         gradient.append('stop')
             .attr('offset', '0%')
             .style('stop-color', PURPLE);
-        
+
         gradient.append('stop')
             .attr('offset', '50%')
             .style('stop-color', ORANGERED);
@@ -109,7 +110,7 @@ class DotDensityMap {
 
     updateVis() {
         let vis = this
-        
+
         vis.collegeData = vis.collegeData.filter(d => (d.clustering_college !== '' && d.ec_own_ses_college !== ''))
 
         // Render the visualization
@@ -143,6 +144,8 @@ class DotDensityMap {
             .join(enter => enter.append('g')
                 .attr('class', 'college')
                 .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] - 1})`)
+                .on('mouseout', () => hideTooltip())
+                .on('mousemove', (event, d) => showTooltip(event, d))
             )
 
         const colourScale = d3.scaleLinear()
@@ -162,16 +165,44 @@ class DotDensityMap {
             .attr('fill', 'orangered');
 
         // Create a scale for mapping clustering_college values to circle radius
-        const radiusScale = d3.scaleLinear() 
+        const radiusScale = d3.scaleLinear()
             .domain([0.0989, 0.660])
             .range([1, 10]);
+
+        const tooltip = d3.select('body')
+            .append('div')
+            .attr('id', 'tooltip')
 
         // Append a circle for each college within its group
         collegeGroups.append('circle')
             .attr('r', d => radiusScale(d.clustering_college))
             .attr('fill', d => colourScale(d.ec_own_ses_college))
-            .style('opacity', 0.7);
-        
+            .style('opacity', 0.7)
+            .on('mouseover', (event, d) => showTooltip(event, d))
+            .on('mouseout', () => hideTooltip());
+
+        function showTooltip(event, d) {
+            // Update tooltip content with data
+            tooltip.html(`<strong>${d.college_name}</strong>`);
+
+            // Get absolute mouse coordinates
+            const mouseX = event.pageX;
+            const mouseY = event.pageY;
+            console.log(mouseX, mouseY);
+
+            // Position the tooltip at the cursor
+            tooltip.style('left', `${mouseX + vis.config.tooltipPadding}px`)
+                .style('top', `${mouseY + vis.config.tooltipPadding}px`);
+
+            // Show the tooltip
+            tooltip.style('display', 'block');
+        }
+
+        // Hide the tooltip
+        function hideTooltip() {
+            tooltip.style('display', 'none');
+        }
+
         // Notify main.js that rendering is done
         vis.dispatcher.call('completedInitialLoad', null, "dot density map");
     }
