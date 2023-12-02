@@ -27,20 +27,14 @@ let dataFilters = {
     parentSesQuartile: null,
     friendingBiasQuartile: null
 }
+let filteredData;
 
 /**
  * ==[ HELPERS ]========================================================================================================
  */
 
 function updateGraphs() {
-    // filter data
-    const {parentSesQuartile, friendingBiasQuartile} = dataFilters
-    const filteredData = allData.filter((d) => {
-        return (!parentSesQuartile || d.ec_parent_ses_college_quartile === parentSesQuartile)
-            && (!friendingBiasQuartile || d.bias_own_ses_college_quartile === friendingBiasQuartile)
-    })
-
-    // Update with new data
+    // Update with data
     dotDensityMap.collegeData = filteredData
     dotDensityMap.updateVis()
 
@@ -84,6 +78,14 @@ dispatcher.on('filterData', newDataFilters => {
         // otherwise, set the new filter
         dataFilters = newDataFilters
     }
+    
+    // filter data
+    const {parentSesQuartile, friendingBiasQuartile} = dataFilters
+    filteredData = allData.filter((d) => {
+        return (!parentSesQuartile || d.ec_parent_ses_college_quartile === parentSesQuartile)
+            && (!friendingBiasQuartile || d.bias_own_ses_college_quartile === friendingBiasQuartile)
+    })
+    
     updateGraphs()
 })
 
@@ -121,6 +123,7 @@ d3.csv('data/preprocessed-social-capital-usa-colleges.csv').then(data => {
         })
     })
     allData = data
+    filteredData = allData // since data is not filtered initially
 
     // Load US State Boundaries data
     d3.json('data/us-state-boundaries.geojson').then(function (us) {
@@ -214,11 +217,13 @@ d3.select('#parent-ses-slider')
         updateGraphs()
     })
 
-// Reset values and sliders when clear filters button is clicked
+// Reset values, sliders, and data when clear filters button is clicked
 d3.select('#clear-filters')
     .on('click', (_event) => {
         dataFilters = {parentSesQuartile: null, friendingBiasQuartile: null}
         bisliderParentSesValue = MAX_BISLIDER_VALUE
         document.getElementById('parent-ses-slider').value = MAX_BISLIDER_VALUE
+        
+        filteredData = allData
         updateGraphs()
     })
