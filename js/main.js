@@ -12,7 +12,7 @@ const MAX_BISLIDER_VALUE = 1.74
  */
 
 let allData;
-let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
+let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper;
 
 const dispatcher = d3.dispatch('completedInitialLoad', 'filterData')
 
