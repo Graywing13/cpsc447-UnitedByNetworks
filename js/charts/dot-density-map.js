@@ -1,4 +1,5 @@
 const PURPLE = '#7b0698'
+const ORANGERED = '#d55a4f'
 const YELLOW = '#fff538'
 class DotDensityMap {
     constructor(_config, dispatcher) {
@@ -7,7 +8,7 @@ class DotDensityMap {
             containerWidth: _config.containerWidth || 800,
             containerHeight: _config.containerHeight || 600,
             margin: _config.margin || {
-                top: 30,
+                top: 10,
                 right: 150,
                 bottom: 120,
                 left: -120
@@ -81,6 +82,10 @@ class DotDensityMap {
         gradient.append('stop')
             .attr('offset', '0%')
             .style('stop-color', PURPLE);
+        
+        gradient.append('stop')
+            .attr('offset', '50%')
+            .style('stop-color', ORANGERED);
 
         gradient.append('stop')
             .attr('offset', '100%')
@@ -104,6 +109,8 @@ class DotDensityMap {
 
     updateVis() {
         let vis = this
+        
+        vis.collegeData = vis.collegeData.filter(d => (d.clustering_college !== '' && d.ec_own_ses_college !== ''))
 
         // Render the visualization
         vis.renderVis()
@@ -139,8 +146,8 @@ class DotDensityMap {
             )
 
         const colourScale = d3.scaleLinear()
-            .domain([0.21, 1.91])
-            .range([PURPLE, YELLOW]);
+            .domain([0.21, 1.06, 1.91])
+            .range([PURPLE, ORANGERED, YELLOW]);
 
         // Add circles under the "Amount of mutual friends" label
         const circleData = [0.8, 1.8, 2.8, 3.8, 4.8];
@@ -154,15 +161,15 @@ class DotDensityMap {
             .attr('r', d => d * 2)
             .attr('fill', 'orangered');
 
-        // Create a scale for mapping bias_own_ses_college values to circle radius
+        // Create a scale for mapping clustering_college values to circle radius
         const radiusScale = d3.scaleLinear() 
-            .domain([0.099, 0.82])
+            .domain([0.0989, 0.660])
             .range([1, 10]);
 
         // Append a circle for each college within its group
         collegeGroups.append('circle')
             .attr('r', d => radiusScale(d.clustering_college))
-            .attr('fill', d => colourScale(d.ec_own_ses_college || 0))
+            .attr('fill', d => colourScale(d.ec_own_ses_college))
             .style('opacity', 0.7);
         
         // Notify main.js that rendering is done

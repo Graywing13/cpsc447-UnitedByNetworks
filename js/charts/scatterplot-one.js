@@ -8,7 +8,7 @@ class ScatterplotOne {
             containerHeight: _config.containerHeight || 150,
             margin: _config.margin || {
                 top: 20,
-                right: 200,
+                right: 250,
                 bottom: 20,
                 left: 20
             }
@@ -27,7 +27,7 @@ class ScatterplotOne {
         vis.svg = d3.select(vis.config.parentElement).append('svg')
             .attr('width', vis.config.containerWidth)
             .attr('height', vis.config.containerHeight)
-            .attr('style', 'background-color:#FFD700');
+            .attr('style', 'background-color:rgba(255, 193, 0, 0.5)')
 
         // initialize axis
         vis.xScale = d3.scaleLinear()
@@ -57,22 +57,34 @@ class ScatterplotOne {
 
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
+
+        // side title
+        vis.svg.append('text')
+            .attr('class', 'right-margin-text')
+            .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
+            .attr('y', 30)
+            .attr('dy', '.71em')
+            .style('font-weight', 'bold')
+            .style('font-size', 'medium')
+            .text('Most Correlated:');
+
+        // axis labels
+        vis.svg.append('text')
+            .attr('class', 'axis-title')
+            .attr('x', 10)
+            .attr('y', 0)
+            .attr('dy', '.71em')
+            .text('Δ SES');
     }
 
     updateVis() {
         let vis = this;
-
-        // calculate correlation data
-        vis.correlationData = this.calculatePearsonCorrelation(vis.data);
-        vis.topThreeCategories = this.getTopThreeCategories(vis.correlationData);
 
         // if the category's correlation does not exist (likely due to too few points), skip to renderVis
         const currentCategory = vis.topThreeCategories[INDEX_0]
         if (!currentCategory) {
             return vis.renderVis();
         }
-        // console.log(vis.correlationData)
-        // console.log(topThreeCategories)
 
         // y dynamic get and set
         let yDataRange = d3.extent(vis.data, d => d.change_ses);
@@ -83,22 +95,6 @@ class ScatterplotOne {
         vis.xValue = d => currentCategory === 'mean_students_per_cohort'
             ? (d[currentCategory] / 10000)
             : d[currentCategory];
-
-        // axis titles
-        // vis.chart.append('text')
-        //     .attr('class', 'axis-title')
-        //     .attr('y', vis.height - 15)
-        //     .attr('x', vis.width + 10)
-        //     .attr('dy', '.71em')
-        //     .style('text-anchor', 'end')
-        //     .text(vis.topThreeCategories[INDEX_0]);
-
-        vis.svg.append('text')
-            .attr('class', 'axis-title')
-            .attr('x', 10)
-            .attr('y', 0)
-            .attr('dy', '.71em')
-            .text('Δ SES');
 
         vis.renderVis();
     }
@@ -143,10 +139,10 @@ class ScatterplotOne {
 
         // draw circles
         const circlesData = vis.data.filter((d) => d.change_ses !== '' && d[category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes)
-        const circles = vis.chart.selectAll('.point')
+        const circles = vis.chart.selectAll('.point-one')
             .data(circlesData, d => d.college_name)
             .join('circle')
-            .attr('class', 'point')
+            .attr('class', 'point-one')
             .attr('r', 2)
             .attr('cy', d => vis.yScale(vis.yValue(d)))
             .attr('cx', d => vis.xScale(vis.xValue(d)));
@@ -160,35 +156,18 @@ class ScatterplotOne {
             .call(vis.yAxis)
             .call(g => g.select('.domain').remove());
 
-        // TODO fix this from darkening when slider is dragged
-        vis.svg.append('text')
-            .attr('class', 'right-margin-text')
-            .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
-            .attr('y', 20)
-            .attr('dy', '.71em')
-            .style('font-weight', 'bold')
-            .text('Most Correlated:');
-
         vis.chart.selectAll('.most-correlated')
             .data([vis.topThreeCategories[INDEX_0]])
             .join(
                 enter => enter.append("text")
                     .attr('class', 'right-margin-text most-correlated')
                     .attr('x', vis.config.containerWidth - vis.config.margin.right)
-                    .attr('y', 30)
+                    .attr('y', 45)
                     .attr('dy', '.71em')
                     .style('font-style', 'italic')
-                    .text(vis.topThreeCategories[INDEX_0]),
-                update => update.text(vis.topThreeCategories[INDEX_0])
+                    .text(categoryNameAndDescription.get(vis.topThreeCategories[INDEX_0])[0]),
+                update => update.text(categoryNameAndDescription.get(vis.topThreeCategories[INDEX_0])[0])
             )
-
-        // TODO fix this from darkening when slider is dragged
-        vis.svg.append('text')
-            .attr('class', 'right-margin-text')
-            .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
-            .attr('y', 70)
-            .attr('dy', '.71em')
-            .text('Description Placeholder');
 
         vis.chart.selectAll('.correlation')
             .data([correlation])
@@ -196,7 +175,7 @@ class ScatterplotOne {
                 enter => enter.append("text")
                     .attr('class', 'right-margin-text correlation')
                     .attr('x', vis.config.containerWidth - vis.config.margin.right)
-                    .attr('y', 70)
+                    .attr('y', 65)
                     .attr('dy', '.71em')
                     .style('font-style', 'italic')
                     .text(`Pearson's Correlation: ${correlation}`),
@@ -205,49 +184,5 @@ class ScatterplotOne {
 
         // Notify main.js that rendering is done
         vis.dispatcher.call('completedInitialLoad', null, `scatterplot ${INDEX_0}`);
-    }
-
-    calculatePearsonCorrelation(data) {
-        let vis = this
-        let correlationCoefficients = new Map();
-        let categoriesOfInterest = [
-            'mean_students_per_cohort',
-            'ec_high_parent_ses_college',
-            'exposure_own_ses_college',
-            'exposure_parent_ses_college',
-            'bias_own_ses_college',
-            'bias_parent_ses_college',
-            'bias_high_own_ses_college',
-            'bias_high_parent_ses_college',
-            'clustering_college',
-            'support_ratio_college',
-            'volunteering_rate_college'
-        ];
-
-        // For every category, filter for valid data, then calculate correlation coefficient
-        categoriesOfInterest.forEach((category) => {
-            const dataFiltered = data.filter((d) => d.change_ses !== '' && d[category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes);
-            const changeSesData = dataFiltered.map(d => d.change_ses)
-            const categoryData = dataFiltered.map(d => d[category])
-
-            try {
-                const correlationCoefficient = ss.sampleCorrelation(changeSesData, categoryData)
-                correlationCoefficients.set(category, correlationCoefficient)
-            } catch (e) {
-                // there are too few points to calculate a coefficient
-                correlationCoefficients.set(category, null)
-            }
-        })
-
-        return correlationCoefficients;
-    }
-
-    getTopThreeCategories(categoryData) {
-        let categories = Array.from(categoryData.entries());
-
-        categories.sort((a, b) => b[1] - a[1]);
-        let topThreeCategories = categories.slice(0, 3).map(entry => entry && entry[0]);
-
-        return topThreeCategories;
     }
 }

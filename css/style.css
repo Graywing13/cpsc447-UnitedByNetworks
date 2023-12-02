@@ -72,6 +72,15 @@ h2 {
     align-items: center;
 }
 
+#scatterplot-and-table-inner {
+    display: flex;
+}
+
+#small-multiples-scatterplots,
+#column-description-table {
+    flex: 1;
+}
+
 .svg-container {
     padding: 16px;
 }
@@ -339,7 +348,7 @@ h2 {
 }
 
 .sankey-link.not-focused {
-    stroke-opacity: 0.2;
+    stroke-opacity: 0.15;
 }
 
 .sankey-link:hover {
@@ -358,7 +367,7 @@ h2 {
 
 .sankey-node.focused {
     opacity: 1;
-    stroke: var(--highlight);
+    stroke: var(--black) !important;
     stroke-width: 2px;
 }
 
@@ -374,6 +383,42 @@ h2 {
 
 .axis-title {
     font-size: 11px;
+}
+
+.axis.x-axis line {
+    opacity: 0.4
+}
+
+.axis.y-axis line {
+    opacity: 0.4
+}
+
+.point-one {
+    opacity: 0.35;
+    fill: rgb(194, 137, 2);
+}
+
+.point-two {
+    opacity: 0.35;
+    fill: rgb(100, 100, 100);
+}
+
+.point-three {
+    opacity: 0.35;
+    fill: rgb(148, 89, 1);
+}
+
+#column-description-table {
+    margin-top: 16px;
+    width: 450px;
+    height: 459px;
+    font-size: 12px;
+    text-align: left;
+    background-color: #d6d0c9;
+}
+
+th {
+    font-size: 14px;
 }
 
 /* ==[ dot density map ]============================================================================================= */

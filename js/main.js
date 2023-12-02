@@ -12,7 +12,7 @@ const MAX_BISLIDER_VALUE = 1.74
  */
 
 let allData;
-let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
+let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper;
 
 const dispatcher = d3.dispatch('completedInitialLoad', 'filterData')
 
@@ -20,7 +20,9 @@ let isDarkMode = false
 let bisliderParentSesValue = MAX_BISLIDER_VALUE
 let initialLoadCompletionCount = 0
 
+// The selected college's data (a processed data object that contains all attributes)
 let selectedCollege = null
+// Filters that are applied by sankey and affects the other views
 let dataFilters = {
     parentSesQuartile: null,
     friendingBiasQuartile: null
@@ -45,6 +47,7 @@ function updateGraphs() {
     // Sankey always displays all data, but the opacity of the marks change
     sankeyChart.data = allData
     sankeyChart.dataFilters = dataFilters
+    sankeyChart.selectedCollege = selectedCollege
     sankeyChart.updateVis()
 
     // Update all graphs with new data, or with new filter change
@@ -91,7 +94,7 @@ dispatcher.on('filterData', newDataFilters => {
 // Attributes used in the site (most are used in the small multiples scatterplots)
 const numericalAttributes = [
     'mean_students_per_cohort',
-    'ec_own_ses_college,',
+    'ec_own_ses_college',
     'ec_parent_ses_college',
     'ec_high_parent_ses_college',
     'exposure_own_ses_college',
