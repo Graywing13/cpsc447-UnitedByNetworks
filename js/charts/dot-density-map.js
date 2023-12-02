@@ -79,17 +79,15 @@ class DotDensityMap {
             .attr('x2', '100%')
             .attr('y2', '0%');
 
-        gradient.append('stop')
-            .attr('offset', '0%')
-            .style('stop-color', PURPLE);
-        
-        gradient.append('stop')
-            .attr('offset', '50%')
-            .style('stop-color', ORANGERED);
-
-        gradient.append('stop')
-            .attr('offset', '100%')
-            .style('stop-color', YELLOW);
+        gradient.selectAll('stop')
+            .data([
+                { offset: '0%', color: PURPLE },
+                { offset: '50%', color: ORANGERED },
+                { offset: '100%', color: YELLOW }
+            ])
+            .join('stop')
+            .attr('offset', d => d.offset)
+            .style('stop-color', d => d.color);
 
         vis.svg.append('rect')
             .attr('x', vis.width / 2 + 187)
@@ -109,7 +107,7 @@ class DotDensityMap {
 
     updateVis() {
         let vis = this
-        
+
         vis.collegeData = vis.collegeData.filter(d => (d.clustering_college !== '' && d.ec_own_ses_college !== ''))
 
         // Render the visualization
@@ -140,10 +138,9 @@ class DotDensityMap {
         // Bind data and create a group for each college
         const collegeGroups = vis.svg.selectAll('.college')
             .data(vis.collegeData, d => d.college)
-            .join(enter => enter.append('g')
-                .attr('class', 'college')
-                .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] - 1})`)
-            )
+            .join('g')
+            .attr('class', 'college')
+            .attr('transform', d => `translate(${projection([d.lon, d.lat])[0]}, ${projection([d.lon, d.lat])[1] - 1})`);
 
         const colourScale = d3.scaleLinear()
             .domain([0.21, 1.06, 1.91])
@@ -154,7 +151,7 @@ class DotDensityMap {
 
         vis.svg.selectAll('.circle')
             .data(circleData)
-            .enter().append('circle')
+            .join('circle')
             .attr('class', 'circle')
             .attr('cx', (d, i) => vis.width / 2 - 25 + i * 35)
             .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 77)
@@ -162,16 +159,18 @@ class DotDensityMap {
             .attr('fill', 'orangered');
 
         // Create a scale for mapping clustering_college values to circle radius
-        const radiusScale = d3.scaleLinear() 
+        const radiusScale = d3.scaleLinear()
             .domain([0.0989, 0.660])
             .range([1, 10]);
 
         // Append a circle for each college within its group
-        collegeGroups.append('circle')
+        collegeGroups.selectAll('circle')
+            .data(d => [d])
+            .join('circle')
             .attr('r', d => radiusScale(d.clustering_college))
             .attr('fill', d => colourScale(d.ec_own_ses_college))
             .style('opacity', 0.7);
-        
+
         // Notify main.js that rendering is done
         vis.dispatcher.call('completedInitialLoad', null, "dot density map");
     }
