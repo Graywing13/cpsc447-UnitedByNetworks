@@ -347,7 +347,7 @@ class SankeyChart {
                             && d.target.quartile === vis.selectedCollege.bias_own_ses_college_quartile) {
                             return BLUE
                         }
-                        
+
                         return `url(#${d.uid})`
                     }),
                 exit => exit.remove()
@@ -356,13 +356,11 @@ class SankeyChart {
         // Create boxplot-sankey connector polygons
         const polygons = vis.chart.selectAll('polygon')
             .data(vis.boxplotPolygons, d => d.category)
-            .join(enter => {
-                enter.append('polygon')
-                        .attr('points', d => d.polygonMap
-                            .map((p) => [(p.x), (p.y)].join(','))
-                            .join(' '))
-                        .attr('fill', d => SANKEY_COLORS[d.category])
-                }
+            .join(enter => enter.append('polygon')
+                .attr('points', d => d.polygonMap
+                    .map((p) => [(p.x), (p.y)].join(','))
+                    .join(' '))
+                .attr('fill', d => SANKEY_COLORS[d.category])
             )
             .on('click', (event, d) => {
                 const [nodeType, quartile] = d.category.split('Q')
@@ -439,7 +437,7 @@ class SankeyChart {
                                 : ' not-focused'
                         }
                         return classNames
-                    })    .style('stroke', d => {
+                    }).style('stroke', d => {
                         // If a college is selected, outline the node quartiles it belongs to with blue
                         if (vis.selectedCollege) {
                             if (d.category.split('Q')[0] === 'parentSes') {

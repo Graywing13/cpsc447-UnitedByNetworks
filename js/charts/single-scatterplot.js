@@ -83,29 +83,29 @@ class SingleScatterplot {
     updateVis() {
         let vis = this
 
-        // if the category's correlation does not exist (likely due to too few points), skip to renderVis
-        const currentCategory = vis.topThreeCategories[vis.plotIndex]
-        if (!currentCategory) {
-            return vis.renderVis()
-        }
+        // If the category's correlation does not exist (likely due to too few points), skip to renderVis
+        vis.category = vis.topThreeCategories[vis.plotIndex]
+        if (!vis.category) return vis.renderVis()
 
-        // y dynamic get and set
+        // Figure out the correlation (if it exists)
+        vis.correlation = vis.correlationData.get(vis.category)?.toFixed(3)
+
+        // Setup dynamic y range, scale, and getter function
         let yDataRange = d3.extent(vis.data, d => d.change_ses)
         vis.yScale.domain(yDataRange)
         vis.yValue = d => d.change_ses
 
-        // x dynamic get and set
-        vis.xValue = d => currentCategory === 'mean_students_per_cohort'
-            ? (d[currentCategory] / 10000)
-            : d[currentCategory]
-
-
-        // Figure out the correlation (if it exists)
-        vis.category = vis.topThreeCategories[vis.plotIndex]
-        vis.correlation = vis.correlationData.get(vis.category)?.toFixed(3)
+        // Setup dynamic x getter function
+        vis.xValue = d => vis.category === 'mean_students_per_cohort'
+            ? (d[vis.category] / 10000)
+            : d[vis.category]
 
         // filter data
-        vis.data = vis.data.filter((d) => d.change_ses !== '' && d[vis.category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes)
+        vis.data = vis.data.filter(
+            (d) => d.change_ses !== ''
+                && d[vis.category] !== ''
+                && d.ec_parent_ses_college <= vis.maxParentSes
+        )
 
         vis.renderVis()
     }
@@ -125,18 +125,23 @@ class SingleScatterplot {
                         .attr('x', 0)
                         .attr('y', 0)
                         .attr('width', vis.config.containerWidth)
-                        .attr('height', vis.config.containerHeight)
-                        .attr('fill', 'white')
+                        .attr('height', vis.config.containerHeight - 1)
                         .raise()
                     wrapper.append('text')
                         .text("Select a wider range of Family SES to see more insights.")
                         .attr('x', 20)
-                        .attr('y', vis.config.containerHeight / 2)
+                        .attr('y', vis.config.containerHeight / 2 - 10)
+                        .raise()
+                    wrapper.append('text')
+                        .text("Hint: the selected range may be too low for the sankey's filtered data")
+                        .attr('font-style', 'italic')
+                        .attr('x', 20)
+                        .attr('y', vis.config.containerHeight / 2 + 30)
                         .raise()
 
                     return wrapper
                 },
-                update => update.style('opacity', vis.correlation === undefined ? 100 : 0)
+                update => update.style('visibility', vis.correlation === undefined ? 'visible' : 'hidden')
             )
 
         // If the correlation is undefined, no need to render everything else
@@ -157,20 +162,22 @@ class SingleScatterplot {
                             // Get absolute mouse coordinates
                             const mouseX = event.pageX
                             const mouseY = event.pageY
-                            
+
                             // Position the tooltip at the cursor with college name
                             d3.select('#tooltip')
                                 .html(`<strong>${d.college_name}</strong>`)
                                 .style('left', `${mouseX + vis.config.tooltipPadding}px`)
                                 .style('top', `${mouseY + vis.config.tooltipPadding}px`)
                                 .style('display', 'block')
-                            
+
                             // Initiate linkage highlighting
                             vis.dispatcher.call('highlightCollege', null, d)
                         })
-                        .on('mouseexit', () => {
-                            // Remove linkage highlighting
+                        .on('mouseleave', () => {
+                            // Remove linkage highlighting & tooltip
                             vis.dispatcher.call('highlightCollege', null, null)
+                            d3.select('#tooltip')
+                                .style('display', 'none')
                         })
                 },
                 update => {

@@ -403,6 +403,12 @@ polygon:hover {
 
 /* ==[ small multiples scatterplot ]============================================================================= */
 
+#small-multiples-scatterplots {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
 .right-margin-text {
     font-size: small;
 }
@@ -452,6 +458,16 @@ polygon:hover {
 
 th {
     font-size: 14px;
+}
+
+.not-enough-data > rect {
+    fill: var(--light-gray);
+    stroke-dasharray: 4;
+    stroke: var(--muted-text);
+}
+
+.not-enough-data text {
+    fill: var(--darker-gray);
 }
 
 /* ==[ dot density map ]============================================================================================= */
