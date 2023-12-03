@@ -229,15 +229,7 @@ class SankeyChart {
                     const paths = groups.append('path')
                         .attr('class', 'sankey-link clickable')
                         .attr('d', d3.sankeyLinkHorizontal())
-                        .attr('stroke', (d) => {
-                            if (vis.selectedCollege
-                                && d.source.quartile === vis.selectedCollege.ec_parent_ses_college_quartile
-                                && d.target.quartile === vis.selectedCollege.bias_own_ses_college_quartile) {
-                                return BLUE
-                            }
-                            
-                            return `url(#${d.uid})`
-                        })
+                        .attr('stroke', (d) => `url(#${d.uid})`)
                         .attr('stroke-width', d => Math.max(1, d.width))
                         .on('click', (event, d) => {
                             const data = {
@@ -259,6 +251,15 @@ class SankeyChart {
                             return 'sankey-link clickable not-focused'
                         }
                         return 'sankey-link clickable'
+                    })
+                    .attr('stroke', (d) => {
+                        if (vis.selectedCollege
+                            && d.source.quartile === vis.selectedCollege.ec_parent_ses_college_quartile
+                            && d.target.quartile === vis.selectedCollege.bias_own_ses_college_quartile) {
+                            return BLUE
+                        }
+                        
+                        return `url(#${d.uid})`
                     }),
                 exit => exit.remove()
             )
@@ -277,20 +278,6 @@ class SankeyChart {
                         .attr('height', d => d.y1 - d.y0)
                         .attr('width', d => d.x1 - d.x0)
                         .attr('fill', d => SANKEY_COLORS[d.category])
-                        .style('stroke', d => {
-                            // If a college is selected, outline the node quartiles it belongs to with blue
-                            if (vis.selectedCollege) {
-                                if (d.category.split('Q')[0] === 'parentSes') {
-                                    if (d.quartile === vis.selectedCollege.ec_parent_ses_college_quartile) {
-                                        return BLUE
-                                    }
-                                } else {
-                                    if (d.quartile === vis.selectedCollege.bias_own_ses_college_quartile) {
-                                        return BLUE
-                                    }
-                                }
-                            }
-                        })
                         .on('click', (event, d) => {
                             // Gets the category to filter on (i.e. friendingBiasQuartile or parentSesQuartile)
                             const filterName = `${d.category.split('Q')[0]}Quartile`
@@ -325,6 +312,20 @@ class SankeyChart {
                                 : ' not-focused'
                         }
                         return classNames
+                    })    
+                    .style('stroke', d => {
+                        // If a college is selected, outline the node quartiles it belongs to with blue
+                        if (vis.selectedCollege) {
+                            if (d.category.split('Q')[0] === 'parentSes') {
+                                if (d.quartile === vis.selectedCollege.ec_parent_ses_college_quartile) {
+                                    return BLUE
+                                }
+                            } else {
+                                if (d.quartile === vis.selectedCollege.bias_own_ses_college_quartile) {
+                                    return BLUE
+                                }
+                            }
+                        }
                     }),
                 exit => exit
             )

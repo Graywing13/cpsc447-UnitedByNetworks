@@ -36,7 +36,7 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + vis.config.margin.right - 100)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
             .attr('text-anchor', 'middle')
-            .text('Amount of mutual friends');
+            .text('Amount of mutual friends')
 
         vis.svg.append('text')
             .attr('class', 'label')
@@ -44,7 +44,7 @@ class DotDensityMap {
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'end')
             .style('font-weight', 'bold')
-            .text('low');
+            .text('low')
 
         vis.svg.append('text')
             .attr('class', 'label')
@@ -52,7 +52,7 @@ class DotDensityMap {
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'start')
             .style('font-weight', 'bold')
-            .text('low');
+            .text('low')
 
         vis.svg.append('text')
             .attr('class', 'label')
@@ -60,7 +60,7 @@ class DotDensityMap {
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'end')
             .style('font-weight', 'bold')
-            .text('high');
+            .text('high')
 
         // Add "high" label on the right
         vis.svg.append('text')
@@ -69,7 +69,7 @@ class DotDensityMap {
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 105)
             .attr('text-anchor', 'start')
             .style('font-weight', 'bold')
-            .text('high');
+            .text('high')
 
         // Add a color gradient bar
         const gradient = vis.svg.append('defs')
@@ -78,7 +78,7 @@ class DotDensityMap {
             .attr('x1', '0%')
             .attr('y1', '0%')
             .attr('x2', '100%')
-            .attr('y2', '0%');
+            .attr('y2', '0%')
 
         gradient.selectAll('stop')
             .data([
@@ -88,14 +88,14 @@ class DotDensityMap {
             ])
             .join('stop')
             .attr('offset', d => d.offset)
-            .style('stop-color', d => d.color);
+            .style('stop-color', d => d.color)
 
         vis.svg.append('rect')
             .attr('x', vis.width / 2 + 187)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom + 70)
             .attr('width', 150)
             .attr('height', 15)
-            .style('fill', 'url(#color-gradient)');
+            .style('fill', 'url(#color-gradient)')
 
         // Add a label to the right
         vis.svg.append('text')
@@ -103,7 +103,7 @@ class DotDensityMap {
             .attr('x', vis.width / 2 + vis.config.margin.right + 75)
             .attr('y', vis.config.containerHeight - vis.config.margin.bottom / 2)
             .attr('text-anchor', 'middle')
-            .text('Student SES');
+            .text('Student SES')
     }
 
     updateVis() {
@@ -148,10 +148,10 @@ class DotDensityMap {
 
         const colourScale = d3.scaleLinear()
             .domain([0.21, 1.06, 1.91])
-            .range([PURPLE, ORANGERED, YELLOW]);
+            .range([PURPLE, ORANGERED, YELLOW])
 
         // Add circles under the "Amount of mutual friends" label
-        const circleData = [0.8, 1.8, 2.8, 3.8, 4.8];
+        const circleData = [0.8, 1.8, 2.8, 3.8, 4.8]
 
         vis.svg.selectAll('.circle')
             .data(circleData)
@@ -160,12 +160,12 @@ class DotDensityMap {
             .attr('cx', (d, i) => vis.width / 2 - 25 + i * 35)
             .attr('cy', vis.config.containerHeight - vis.config.margin.bottom + 77)
             .attr('r', d => d * 2)
-            .attr('fill', 'orangered');
+            .attr('fill', 'orangered')
 
         // Create a scale for mapping clustering_college values to circle radius
         const radiusScale = d3.scaleLinear()
             .domain([0.0989, 0.660])
-            .range([1, 10]);
+            .range([1, 10])
 
         const tooltip = d3.select('body')
             .append('div')
@@ -177,31 +177,49 @@ class DotDensityMap {
             .join('circle')
             .attr('r', d => radiusScale(d.clustering_college))
             .attr('fill', d => colourScale(d.ec_own_ses_college))
-            .style('opacity', 0.7);
+            .style('opacity', 0.7)
 
         function showTooltip(event, d) {
+
             // Update tooltip content with data
-            tooltip.html(`<strong>${d.college_name}</strong>`);
+            tooltip.html(`<strong>${d.college_name}</strong>`)
+
+            // Dispatch the highlighted college to the main file
+            vis.dispatcher.call('highlightCollege', null, d)
 
             // Get absolute mouse coordinates
-            const mouseX = event.pageX;
-            const mouseY = event.pageY;
-            console.log(mouseX, mouseY);
+            const mouseX = event.pageX
+            const mouseY = event.pageY
 
             // Position the tooltip at the cursor
             tooltip.style('left', `${mouseX + vis.config.tooltipPadding}px`)
-                .style('top', `${mouseY + vis.config.tooltipPadding}px`);
+                .style('top', `${mouseY + vis.config.tooltipPadding}px`)
+
+            // Update the fill color of the hovered college to blue
+            collegeGroups.selectAll('circle')
+                .style('fill', c => (c === d) ? '#60b1ef' : colourScale(c.ec_own_ses_college))
+                .style('opacity', c => (c === d) ? 1 : 0.7)
+
+            // Set the text color of the tooltip to black
+            tooltip.style('color', '#000')
 
             // Show the tooltip
-            tooltip.style('display', 'block');
+            tooltip.style('display', 'block')
         }
 
         // Hide the tooltip
         function hideTooltip() {
-            tooltip.style('display', 'none');
+            tooltip.style('display', 'none')
+
+            // Reset the fill color of all circles to their original color
+            collegeGroups.selectAll('circle')
+                .style('fill', d => colourScale(d.ec_own_ses_college))
+                .style('opacity', 0.7)
+
+            vis.dispatcher.call('highlightCollege', null, null)
         }
 
         // Notify main.js that rendering is done
-        vis.dispatcher.call('completedInitialLoad', null, "dot density map");
+        vis.dispatcher.call('completedInitialLoad', null, "dot density map")
     }
 }

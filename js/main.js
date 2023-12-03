@@ -11,10 +11,10 @@ const MAX_BISLIDER_VALUE = 1.74
  * ==[ VARIABLES ]======================================================================================================
  */
 
-let allData;
-let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper;
+let allData
+let dotDensityMap, sankeyChart, smallMultiplesScatterplotsWrapper
 
-const dispatcher = d3.dispatch('completedInitialLoad', 'filterData')
+const dispatcher = d3.dispatch('completedInitialLoad', 'filterData', 'highlightCollege')
 
 let isDarkMode = false
 let bisliderParentSesValue = MAX_BISLIDER_VALUE
@@ -27,7 +27,7 @@ let dataFilters = {
     parentSesQuartile: null,
     friendingBiasQuartile: null
 }
-let filteredData;
+let filteredData
 
 /**
  * ==[ HELPERS ]========================================================================================================
@@ -86,6 +86,15 @@ dispatcher.on('filterData', newDataFilters => {
             && (!friendingBiasQuartile || d.bias_own_ses_college_quartile === friendingBiasQuartile)
     })
     
+    updateGraphs()
+})
+
+// Handler that is called whenever a dot is highlighted on the map
+dispatcher.on('highlightCollege', highlightedCollege => {
+
+    // Update the selected college in the main file
+    selectedCollege = highlightedCollege
+
     updateGraphs()
 })
 
@@ -198,7 +207,7 @@ function setupDarkModeSwitch() {
         .on('click', () => {
             isDarkMode = !isDarkMode
             const newMode = isDarkMode ? 'dark' : 'light'
-            document.querySelector(":root").setAttribute('data-theme', newMode);
+            document.querySelector(":root").setAttribute('data-theme', newMode)
             window.localStorage.setItem(USE_THEME_KEY, newMode)
             setupDarkModeSwitch()
         })
@@ -207,7 +216,7 @@ function setupDarkModeSwitch() {
 // Initialize theme & switch's text
 if (window.localStorage.getItem(USE_THEME_KEY) === 'dark') {
     isDarkMode = true
-    document.querySelector(":root").setAttribute('data-theme', 'dark');
+    document.querySelector(":root").setAttribute('data-theme', 'dark')
 }
 setupDarkModeSwitch()
 
