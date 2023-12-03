@@ -12,6 +12,9 @@
     --background-color-darkest: #D5CAC3;
     --muted-text: #6B584C;
     --highlight: #7E95A0;
+    --gold-dot: rgb(194, 137, 2);
+    --silver-dot: rgb(100, 100, 100);
+    --bronze-dot: rgb(148, 89, 1);
 }
 
 [data-theme="dark"] {
@@ -26,6 +29,9 @@
     --background-color-darkest: #06304C;
     --muted-text: #8DCCF6;
     --highlight: #C58B59;
+    --gold-dot: rgb(218, 155, 6);
+    --silver-dot: rgb(161, 161, 161);
+    --bronze-dot: rgb(178, 110, 8);
 }
 
 /* ==[ index.html ]================================================================================================== */
@@ -226,7 +232,7 @@ h2 {
 /* ==[ intro modal ]================================================================================================= */
 
 #intro-modal {
-        z-index: 50;
+    z-index: 50;
     background: linear-gradient(125deg, var(--background-color-darkest), var(--background-color));
     box-shadow: 10px 10px var(--hover-shadow), -1em 0 .4em var(--light-gray);
     width: 80%;
@@ -395,17 +401,17 @@ h2 {
 
 .point-one {
     opacity: 0.35;
-    fill: rgb(194, 137, 2);
+    fill: var(--gold-dot);
 }
 
 .point-two {
     opacity: 0.35;
-    fill: rgb(100, 100, 100);
+    fill: var(--silver-dot);
 }
 
 .point-three {
     opacity: 0.35;
-    fill: rgb(148, 89, 1);
+    fill: var(--bronze-dot);
 }
 
 #column-description-table {
