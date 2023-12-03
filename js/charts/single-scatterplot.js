@@ -9,21 +9,23 @@ class SingleScatterplot {
                 right: 250,
                 bottom: 20,
                 left: 20
-            }
+            },
+            tooltipPadding: _config.tooltipPadding || 10
         }
-        this.dispatcher = dispatcher;
-        this.plotIndex = _config.plotIndex;
-        this.backgroundColor = _config.backgroundColor;
+        this.dispatcher = dispatcher
+        this.selectedCollege = null
+        this.plotIndex = _config.plotIndex
+        this.backgroundColor = _config.backgroundColor
         this.circleClassName = _config.circleClassName
-        this.initVis();
+        this.initVis()
     }
 
     initVis() {
-        let vis = this;
+        let vis = this
 
         // svg drawing area config
-        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+        vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right
+        vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom
 
         vis.svg = d3.select(vis.config.parentElement).append('svg')
             .attr('width', vis.config.containerWidth)
@@ -33,19 +35,19 @@ class SingleScatterplot {
         // initialize axis
         vis.xScale = d3.scaleLinear()
             .range([0, vis.width])
-            .domain([-1, 3]);
+            .domain([-1, 3])
 
         vis.yScale = d3.scaleLinear()
             .range([vis.height, 0])
-            .domain([-2, 2]);
+            .domain([-2, 2])
 
         vis.xAxis = d3.axisBottom(vis.xScale)
             .ticks(6)
-            .tickSize(-vis.height - 10);
+            .tickSize(-vis.height - 10)
 
         vis.yAxis = d3.axisLeft(vis.yScale)
             .ticks(6)
-            .tickSize(-vis.width - 10);
+            .tickSize(-vis.width - 10)
 
         // group elements
         vis.chart = vis.svg.append('g')
@@ -54,10 +56,10 @@ class SingleScatterplot {
 
         vis.xAxisG = vis.chart.append('g')
             .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0,${vis.height})`);
+            .attr('transform', `translate(0,${vis.height})`)
 
         vis.yAxisG = vis.chart.append('g')
-            .attr('class', 'axis y-axis');
+            .attr('class', 'axis y-axis')
 
         // side title
         vis.svg.append('text')
@@ -67,7 +69,7 @@ class SingleScatterplot {
             .attr('dy', '.71em')
             .style('font-weight', 'bold')
             .style('font-size', 'medium')
-            .text('Most Correlated:');
+            .text('Most Correlated:')
 
         // axis labels
         vis.svg.append('text')
@@ -75,46 +77,50 @@ class SingleScatterplot {
             .attr('x', 10)
             .attr('y', 0)
             .attr('dy', '.71em')
-            .text('Δ SES');
+            .text('Δ SES')
     }
 
     updateVis() {
-        let vis = this;
+        let vis = this
 
         // if the category's correlation does not exist (likely due to too few points), skip to renderVis
         const currentCategory = vis.topThreeCategories[vis.plotIndex]
         if (!currentCategory) {
-            return vis.renderVis();
+            return vis.renderVis()
         }
 
         // y dynamic get and set
-        let yDataRange = d3.extent(vis.data, d => d.change_ses);
-        vis.yScale.domain(yDataRange);
-        vis.yValue = d => d.change_ses;
+        let yDataRange = d3.extent(vis.data, d => d.change_ses)
+        vis.yScale.domain(yDataRange)
+        vis.yValue = d => d.change_ses
 
         // x dynamic get and set
         vis.xValue = d => currentCategory === 'mean_students_per_cohort'
             ? (d[currentCategory] / 10000)
-            : d[currentCategory];
+            : d[currentCategory]
 
-        vis.renderVis();
+
+        // Figure out the correlation (if it exists)
+        vis.category = vis.topThreeCategories[vis.plotIndex]
+        vis.correlation = vis.correlationData.get(vis.category)?.toFixed(3)
+
+        // filter data
+        vis.data = vis.data.filter((d) => d.change_ses !== '' && d[vis.category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes)
+
+        vis.renderVis()
     }
 
     renderVis() {
-        let vis = this;
-
-        // Figure out the correlation (if it exists)
-        const category = vis.topThreeCategories[vis.plotIndex]
-        const correlation = vis.correlationData.get(category)?.toFixed(3)
+        let vis = this
 
         // Initialize a box that says "not enough data" if there isn't enough data
         vis.svg.selectAll('.not-enough-data')
-            .data([correlation])
+            .data([vis.correlation])
             .join(
                 enter => {
                     const wrapper = enter.append('g')
                         .attr('class', 'not-enough-data')
-                        .style('opacity', correlation === undefined ? 100 : 0)
+                        .style('visibility', vis.correlation === undefined ? 'visible' : 'hidden')
                     wrapper.append('rect')
                         .attr('x', 0)
                         .attr('y', 0)
@@ -130,32 +136,66 @@ class SingleScatterplot {
 
                     return wrapper
                 },
-                update => update.style('opacity', correlation === undefined ? 100 : 0)
+                update => update.style('opacity', vis.correlation === undefined ? 100 : 0)
             )
 
         // If the correlation is undefined, no need to render everything else
-        if (correlation === undefined) {
+        if (vis.correlation === undefined) {
             return
         }
 
-        // draw circles
-        const circlesData = vis.data.filter((d) => d.change_ses !== '' && d[category] !== '' && d.ec_parent_ses_college <= vis.maxParentSes)
-        const circles = vis.chart.selectAll(`.${vis.circleClassName}`)
-            .data(circlesData, d => d.college_name)
-            .join('circle')
-            .attr('class', vis.circleClassName)
-            .attr('r', 2)
-            .attr('cy', d => vis.yScale(vis.yValue(d)))
-            .attr('cx', d => vis.xScale(vis.xValue(d)));
+        vis.chart.selectAll('circle')
+            .data(vis.data, d => d.college)
+            .join(
+                enter => {
+                    enter.append("circle")
+                        .attr('class', vis.circleClassName)
+                        .attr('r', 2)
+                        .attr('cy', d => vis.yScale(vis.yValue(d)))
+                        .attr('cx', d => vis.xScale(vis.xValue(d)))
+                        .on('mouseenter', (event, d) => {
+                            // Get absolute mouse coordinates
+                            const mouseX = event.pageX
+                            const mouseY = event.pageY
+                            
+                            // Position the tooltip at the cursor with college name
+                            d3.select('#tooltip')
+                                .html(`<strong>${d.college_name}</strong>`)
+                                .style('left', `${mouseX + vis.config.tooltipPadding}px`)
+                                .style('top', `${mouseY + vis.config.tooltipPadding}px`)
+                                .style('display', 'block')
+                            
+                            // Initiate linkage highlighting
+                            vis.dispatcher.call('highlightCollege', null, d)
+                        })
+                        .on('mouseexit', () => {
+                            // Remove linkage highlighting
+                            vis.dispatcher.call('highlightCollege', null, null)
+                        })
+                },
+                update => {
+                    return update
+                        .attr('cy', d => vis.yScale(vis.yValue(d)))
+                        .attr('cx', d => vis.xScale(vis.xValue(d)))
+                        .attr('class', d => d.college === vis.selectedCollege?.college ? 'point-highlight' : vis.circleClassName)
+                        .attr('r', d => d.college === vis.selectedCollege?.college ? 4 : 2)
+                },
+                exit => {
+                    return exit.remove();
+                }
+            )
+
+        // Make highlighted dots more visible
+        d3.selectAll('.point-highlight').raise()
 
         // draw gridlines
         vis.xAxisG
             .call(vis.xAxis)
-            .call(g => g.select('.domain').remove());
+            .call(g => g.select('.domain').remove())
 
         vis.yAxisG
             .call(vis.yAxis)
-            .call(g => g.select('.domain').remove());
+            .call(g => g.select('.domain').remove())
 
         vis.chart.selectAll('.most-correlated')
             .data([vis.topThreeCategories[vis.plotIndex]])
@@ -171,7 +211,7 @@ class SingleScatterplot {
             )
 
         vis.chart.selectAll('.correlation')
-            .data([correlation])
+            .data([vis.correlation])
             .join(
                 enter => enter.append("text")
                     .attr('class', 'right-margin-text correlation')
@@ -179,11 +219,11 @@ class SingleScatterplot {
                     .attr('y', 65)
                     .attr('dy', '.71em')
                     .style('font-style', 'italic')
-                    .text(`Pearson's Correlation: ${correlation}`),
-                update => update.text(`Pearson's Correlation: ${correlation}`)
+                    .text(`Pearson's Correlation: ${vis.correlation}`),
+                update => update.text(`Pearson's Correlation: ${vis.correlation}`)
             )
 
         // Notify main.js that rendering is done
-        vis.dispatcher.call('completedInitialLoad', null, `scatterplot ${vis.plotIndex}`);
+        vis.dispatcher.call('completedInitialLoad', null, `scatterplot ${vis.plotIndex}`)
     }
 }

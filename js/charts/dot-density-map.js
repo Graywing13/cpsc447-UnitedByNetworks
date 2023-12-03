@@ -167,9 +167,7 @@ class DotDensityMap {
             .domain([0.0989, 0.660])
             .range([1, 10])
 
-        const tooltip = d3.select('body')
-            .append('div')
-            .attr('id', 'tooltip')
+        const tooltip = d3.select('#tooltip')
 
         // Append a circle for each college within its group
         collegeGroups.selectAll('circle')

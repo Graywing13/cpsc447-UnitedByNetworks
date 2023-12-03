@@ -68,6 +68,7 @@ class SmallMultiplesScatterplots {
             }
         }
         this.dispatcher = dispatcher;
+        this.selectedCollege = null;
         this.initVis();
     }
 
@@ -115,18 +116,21 @@ class SmallMultiplesScatterplots {
         plotOne.maxParentSes = vis.maxParentSes;
         plotOne.correlationData = vis.correlationData;
         plotOne.topThreeCategories = vis.topThreeCategories;
+        plotOne.selectedCollege = vis.selectedCollege;
         plotOne.updateVis();
 
         plotTwo.data = vis.data;
         plotTwo.maxParentSes = vis.maxParentSes;
         plotTwo.correlationData = vis.correlationData;
         plotTwo.topThreeCategories = vis.topThreeCategories;
+        plotTwo.selectedCollege = vis.selectedCollege;
         plotTwo.updateVis();
 
         plotThree.data = vis.data;
         plotThree.maxParentSes = vis.maxParentSes;
         plotThree.correlationData = vis.correlationData;
         plotThree.topThreeCategories = vis.topThreeCategories;
+        plotThree.selectedCollege = vis.selectedCollege;
         plotThree.updateVis();
     }
 

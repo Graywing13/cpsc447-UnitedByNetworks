@@ -47,6 +47,7 @@ function updateGraphs() {
     // Update all graphs with new data, or with new filter change
     smallMultiplesScatterplotsWrapper.data = filteredData
     smallMultiplesScatterplotsWrapper.maxParentSes = bisliderParentSesValue
+    smallMultiplesScatterplotsWrapper.selectedCollege = selectedCollege
     smallMultiplesScatterplotsWrapper.updateVis()
 }
 

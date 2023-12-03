@@ -29,9 +29,9 @@
     --background-color-darkest: #06304C;
     --muted-text: #8DCCF6;
     --highlight: #C58B59;
-    --gold-dot: rgb(218, 155, 6);
-    --silver-dot: rgb(161, 161, 161);
-    --bronze-dot: rgb(178, 110, 8);
+    --gold-dot: rgb(255, 230, 170);
+    --silver-dot: rgb(222, 221, 221);
+    --bronze-dot: rgb(227, 184, 145);
 }
 
 /* ==[ index.html ]================================================================================================== */
@@ -434,6 +434,13 @@ polygon:hover {
     fill: var(--bronze-dot);
 }
 
+.point-highlight {
+    opacity: 1;
+    fill: #60b1ef;
+    stroke: var(--black);
+    stroke-width: 2px;
+}
+
 #column-description-table {
     margin-top: 16px;
     width: 450px;
@@ -462,6 +469,7 @@ th {
     position: absolute;
     padding: 10px;
     background-color: #fff;
+    color: #000;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
