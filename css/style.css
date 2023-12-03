@@ -87,6 +87,10 @@ h2 {
     flex: 1;
 }
 
+line {
+    stroke: var(--black);
+}
+
 .svg-container {
     padding: 16px;
 }
@@ -346,7 +350,7 @@ h2 {
     fill: var(--background-color);
 }
 
-/* ==[ sankey chart ]========================================================================================= */
+/* ==[ sankey chart with boxplots ]================================================================================== */
 
 .sankey-link {
     fill: none;
@@ -369,6 +373,7 @@ h2 {
 .sankey-node {
     stroke: none;
     opacity: 1;
+    pointer-events: none;
 }
 
 .sankey-node.focused {
@@ -378,6 +383,21 @@ h2 {
 }
 
 .sankey-node.not-focused {
+    opacity: 0.3;
+}
+
+.boxplot-box {
+    stroke: var(--black);
+    stroke-width: 1px;
+    fill: var(--white);
+}
+
+polygon {
+    opacity: 0.2;
+    cursor: pointer;
+}
+
+polygon:hover {
     opacity: 0.3;
 }
 

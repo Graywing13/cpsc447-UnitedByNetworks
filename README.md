@@ -32,6 +32,19 @@ Resources
     - https://csv.js.org/parse/examples/stream_pipe/
   - Changes
     - Mainly only used the stream setup listed in the sites; all other logic is written by us.
+- Boxplots:
+  - Resources:
+    - https://d3-graph-gallery.com/graph/boxplot_basic.html
+  - Changes
+    - Made axes on our own
+    - Converted this to join()
+- Drawing polygons (boxplot-sankey connectors)
+  - Resources: 
+    - https://stackoverflow.com/a/13204818
+  - Changes
+    - Created our own points generator
+    - Used our own scales generator
+    - Converted this to join()
 
 Special thanks
 - StackOverflow
@@ -42,3 +55,4 @@ Special thanks
   - https://coolors.co/eeeae7-031826-cfa077-30292f-5d737e
 - Misc research
   - CSS visibility fade: https://greywyvern.com/337
+  - tspan usage: https://stackoverflow.com/a/16701952, https://stackoverflow.com/a/42215609
