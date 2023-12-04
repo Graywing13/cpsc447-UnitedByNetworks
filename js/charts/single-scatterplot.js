@@ -5,18 +5,20 @@ class SingleScatterplot {
             containerWidth: _config.containerWidth || 600,
             containerHeight: _config.containerHeight || 150,
             margin: _config.margin || {
-                top: 20,
+                top: 25,
                 right: 250,
-                bottom: 20,
-                left: 20
+                bottom: 30,
+                left: 30
             },
             tooltipPadding: _config.tooltipPadding || 10
         }
+        this.dispatcher = dispatcher
         this.dispatcher = dispatcher
         this.selectedCollege = null
         this.plotIndex = _config.plotIndex
         this.backgroundColor = _config.backgroundColor
         this.circleClassName = _config.circleClassName
+        this.titlePrefix = _config.titlePrefix
         this.initVis()
     }
 
@@ -64,20 +66,27 @@ class SingleScatterplot {
         // side title
         vis.svg.append('text')
             .attr('class', 'right-margin-text')
-            .attr('x', vis.config.containerWidth - vis.config.margin.right + 20)
+            .attr('x', vis.config.containerWidth - vis.config.margin.right + 30)
             .attr('y', 30)
             .attr('dy', '.71em')
             .style('font-weight', 'bold')
             .style('font-size', 'medium')
-            .text('Most Correlated:')
+            .text(`${vis.titlePrefix}Most Correlated:`)
 
         // axis labels
         vis.svg.append('text')
             .attr('class', 'axis-title')
             .attr('x', 10)
-            .attr('y', 0)
+            .attr('y', 10)
             .attr('dy', '.71em')
             .text('Δ SES')
+        
+        vis.svg.append('text')
+            .attr('class', 'axis-title')
+            .attr('x', '130px')
+            .attr('y', vis.config.containerHeight - 12)
+            .attr('dy', '.71em')
+            .text('x-axis: see italicized variable')
     }
 
     updateVis() {
@@ -210,7 +219,7 @@ class SingleScatterplot {
                 enter => enter.append("text")
                     .attr('class', 'right-margin-text most-correlated')
                     .attr('x', vis.config.containerWidth - vis.config.margin.right)
-                    .attr('y', 45)
+                    .attr('y', 40)
                     .attr('dy', '.71em')
                     .style('font-style', 'italic')
                     .text(categoryNameAndDescription.get(vis.topThreeCategories[vis.plotIndex])[0]),
@@ -224,7 +233,7 @@ class SingleScatterplot {
                     .attr('class', 'right-margin-text correlation')
                     .attr('x', vis.config.containerWidth - vis.config.margin.right)
                     .attr('y', 65)
-                    .attr('dy', '.71em')
+                    .attr('dy', '1.4em')
                     .style('font-style', 'italic')
                     .text(`Pearson's Correlation: ${vis.correlation}`),
                 update => update.text(`Pearson's Correlation: ${vis.correlation}`)

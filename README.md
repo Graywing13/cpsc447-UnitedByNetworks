@@ -1,8 +1,8 @@
 # D3 Project Starter Template
 
 Notes
-- This is meant for a screen size of at least 1600x900, otherwise tooltips may be cut off.
-- Zoom may need to be reduced to ~75% to display all content
+- This is meant for a screen size of at least 1600x900
+- Zoom may need to be reduced to 50-67% to display all content
 
 Supported Features
 - Core Visualization: 
@@ -49,10 +49,11 @@ Resources
 Special thanks
 - StackOverflow
   - Joining groups: https://stackoverflow.com/a/68201968
-- Image credits
-  - Cats in intro modal: https://i.pinimg.com/736x/ea/39/fc/ea39fc7a6e6ac52ab124f0d5802d8a0b.jpg
+  - Inspiration for storing variable changes: https://stackoverflow.com/a/23411456
+  - Transition transform: https://stackoverflow.com/a/35598838
 - Colour help
   - https://coolors.co/eeeae7-031826-cfa077-30292f-5d737e
 - Misc research
   - CSS visibility fade: https://greywyvern.com/337
   - tspan usage: https://stackoverflow.com/a/16701952, https://stackoverflow.com/a/42215609
+  - Update group's child (i.e. use select() not selectAll()): https://groups.google.com/g/d3-js/c/ea_4Zr_JFM4?pli=1

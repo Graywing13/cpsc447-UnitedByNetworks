@@ -30,7 +30,7 @@ class SankeyChart {
     constructor(_config, dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 600,
+            containerWidth: _config.containerWidth || 700,
             containerHeight: _config.containerHeight || 240,
             margin: _config.margin || {
                 top: 40,
@@ -126,16 +126,14 @@ class SankeyChart {
                             <li>A higher bias means the student mainly has friends with similar socioeconomic backgrounds.</li>
                         </ul>
                     `)
-            }).on('mouseleave', () => {
-            d3.select('#help-text').style('display', 'none')
-        })
+            }).on('mouseleave', () => d3.select('#help-text').style('display', 'none'))
 
         // Initiate sankey generator
         vis.sankey = d3.sankey()
             .nodeId(d => d.name)
             .nodeWidth(15)
             .nodePadding(10)
-            .extent([[200, 0], [vis.width - 200, vis.height]])
+            .extent([[250, 0], [vis.width - 250, vis.height]])
             .nodeSort(null)
             .linkSort((a, b) => {
                 const sortingValueA = a.source.index * 10 + a.target.index

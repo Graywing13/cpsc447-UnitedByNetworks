@@ -1,4 +1,10 @@
-let plotOne, plotTwo, plotThree;
+let plotOne, plotTwo, plotThree, variablesTable;
+
+const podiumColors = [
+    'rgba(255, 193, 0, 0.5)',
+    'rgba(190, 190, 190, 0.65)',
+    'rgba(207, 128, 10, 0.6)'
+]
 
 const categoriesOfInterest = [
     'mean_students_per_cohort',
@@ -38,7 +44,7 @@ const categoryNameAndDescription = new Map([
         ['Likelihood of befriending peers with same family SES',
             'Student tendency to be friends with other students who have parents with similar SES (i.e a higher bias indicates that students are more likely to be friends with other students from families with similar economic backgrounds)']],
     ['bias_high_own_ses_college',
-        ['Likelihood of befriending peers with high SES',
+        ['Likelihood of befriending high SES peers',
             'Student tendency to befriend other students with high-SES (a higher bias indicates that students are more likely to be friends with other students of high economic backgrounds)']],
     ['bias_high_parent_ses_college',
         ['Likelihood of befriending peers from high SES families',
@@ -59,7 +65,7 @@ class SmallMultiplesScatterplots {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 550,
-            containerHeight: _config.containerHeight || 450,
+            containerHeight: _config.containerHeight || 465,
             margin: _config.margin || {
                 top: 20,
                 right: 20,
@@ -77,8 +83,9 @@ class SmallMultiplesScatterplots {
             {
                 parentElement: '#scatterplot-one',
                 plotIndex: 0,
-                backgroundColor: 'rgba(255, 193, 0, 0.5)',
-                circleClassName: 'point-one'
+                backgroundColor: podiumColors[0],
+                circleClassName: 'point-one',
+                titlePrefix: ''
             },
             dispatcher
         );
@@ -87,8 +94,9 @@ class SmallMultiplesScatterplots {
             {
                 parentElement: '#scatterplot-two',
                 plotIndex: 1,
-                backgroundColor: 'rgba(190, 190, 190, 0.65)',
-                circleClassName: 'point-two'
+                backgroundColor: podiumColors[1],
+                circleClassName: 'point-two',
+                titlePrefix: '2nd '
             },
             dispatcher
         )
@@ -97,11 +105,18 @@ class SmallMultiplesScatterplots {
             {
                 parentElement: '#scatterplot-three',
                 plotIndex: 2,
-                backgroundColor: 'rgba(207, 128, 10, 0.6)',
-                circleClassName: 'point-three'
+                backgroundColor: podiumColors[2],
+                circleClassName: 'point-three',
+                titlePrefix: '3rd '
             },
             dispatcher
         )
+        
+        variablesTable = new VariablesTable({
+            parentElement: '#column-description-table',
+            descriptions: categoryNameAndDescription,
+            podiumColors: podiumColors
+        })
     }
 
     updateVis() {
@@ -132,6 +147,9 @@ class SmallMultiplesScatterplots {
         plotThree.topThreeCategories = vis.topThreeCategories;
         plotThree.selectedCollege = vis.selectedCollege;
         plotThree.updateVis();
+        
+        variablesTable.topCategories = vis.topCategories;
+        variablesTable.updateVis();
     }
 
     calculatePearsonCorrelation(data) {

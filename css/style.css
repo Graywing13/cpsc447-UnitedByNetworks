@@ -11,10 +11,12 @@
     --background-color-darker: #DDD4CF;
     --background-color-darkest: #D5CAC3;
     --muted-text: #6B584C;
+    --muted-border: #6B584C;
     --highlight: #7E95A0;
     --gold-dot: rgb(194, 137, 2);
     --silver-dot: rgb(100, 100, 100);
     --bronze-dot: rgb(148, 89, 1);
+    --correlated-text-weight: 600;
 }
 
 [data-theme="dark"] {
@@ -28,10 +30,12 @@
     --background-color-darker: #042439;
     --background-color-darkest: #06304C;
     --muted-text: #8DCCF6;
+    --muted-border: #0a3149;
     --highlight: #C58B59;
     --gold-dot: rgb(255, 230, 170);
     --silver-dot: rgb(222, 221, 221);
     --bronze-dot: rgb(227, 184, 145);
+    --correlated-text-weight: 500;
 }
 
 /* ==[ index.html ]================================================================================================== */
@@ -68,9 +72,13 @@ h2 {
 #content {
     display: flex;
     width: 100%;
-    gap: 96px;
+    gap: 140px;
     justify-content: center;
     box-sizing: border-box;
+}
+
+#sankey-div {
+    margin-bottom: 50px;
 }
 
 #content-left {
@@ -372,6 +380,8 @@ line {
 
 .sankey-node {
     stroke: none;
+    stroke-width: 3px;
+    stroke-opacity: 0.7;
     opacity: 1;
     pointer-events: none;
 }
@@ -409,6 +419,10 @@ polygon:hover {
     gap: 4px;
 }
 
+#small-multiples-scatterplots text {
+    fill: var(--black);
+}
+
 .right-margin-text {
     font-size: small;
 }
@@ -423,6 +437,12 @@ polygon:hover {
 
 .axis.y-axis line {
     opacity: 0.4
+}
+
+.most-correlated {
+    font-size: 18px;
+    font-weight: var(--correlated-text-weight);
+    font-family: 'Amatic SC', sans-serif;
 }
 
 .point-one {
@@ -447,19 +467,6 @@ polygon:hover {
     stroke-width: 2px;
 }
 
-#column-description-table {
-    margin-top: 16px;
-    width: 450px;
-    height: 459px;
-    font-size: 12px;
-    text-align: left;
-    background-color: #d6d0c9;
-}
-
-th {
-    font-size: 14px;
-}
-
 .not-enough-data > rect {
     fill: var(--light-gray);
     stroke-dasharray: 4;
@@ -468,6 +475,52 @@ th {
 
 .not-enough-data text {
     fill: var(--darker-gray);
+}
+
+/* ==[ column-description-table ]==================================================================================== */
+
+#column-description-table {
+    margin-top: 16px;
+    width: 200px;
+    height: 465px;
+    font-size: 12px;
+    text-align: left;
+    border: 2px solid var(--muted-border);
+    border-radius: 2px;
+}
+
+#column-description-table .title {
+    fill: var(--black);
+    font-size: 18px;
+}
+
+.table-row {
+    transition: all 1s ease-in-out;
+}
+
+.table-row rect {
+    fill: var(--background-color-darkest);
+}
+
+.table-row text {
+    pointer-events: none;
+    fill: var(--black);
+}
+
+.table-row text.row-rank {
+    font-weight: bolder;
+}
+
+.table-row text.red-fill {
+    fill: red;
+}
+
+.table-row text.green-fill {
+    fill: green;
+}
+
+.table-row text.gray-fill {
+    fill: var(--dark-gray);
 }
 
 /* ==[ dot density map ]============================================================================================= */
