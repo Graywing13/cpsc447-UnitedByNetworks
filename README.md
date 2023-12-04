@@ -6,14 +6,14 @@ Notes
 
 Supported Features
 - Core Visualization: 
-  - Dot Density map 
-  - Sankey -- filter data in map & scatterplots by clicking links
-  - Small multiples scatterplot -- filter scatterplots' data with slider
+  - Dot Density map -- bidirectional linking with both sankey and small multiples scatterplot
+  - Sankey -- filter data in map & scatterplots by clicking links, connected boxplots at the side for more information
+  - Small multiples scatterplot -- filter scatterplots' data with slider, dynamic table to view all variables, bidirectional linking with both sankey and map
 - Visualization aid: 
   - Clear Filters button -- reset sankey filters & scatterplot slider
   - Description modal -- with "Don't show again" to hide on load, and openable via help icon
   - Light/dark mode -- to aid with luminance contrast
-  - Label tooltips (e.g. on Sankey's friending bias)
+  - Label tooltips (e.g. on Sankey's friending bias & the rankings table)
 
 Resources
 - D3 Sankey usage: 
