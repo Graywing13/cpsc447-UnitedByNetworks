@@ -55,8 +55,6 @@ class VariablesTable {
     updateVis() {
         let vis = this
 
-        console.log(vis.topCategories)
-
         // If persistence map is not initialized, set it to an obj of {name1: 0, name2: 1, name3: 2} etc.
         if (!vis.oldVariableOrder) {
             vis.oldVariableOrder = {}

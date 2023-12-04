@@ -543,3 +543,7 @@ polygon:hover {
     border-radius: 5px;
 }
 
+.map-blue-dot {
+    fill: #60b1ef !important;
+    opacity: 1;
+}

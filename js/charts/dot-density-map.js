@@ -18,6 +18,7 @@ class DotDensityMap {
         this.dispatcher = dispatcher
         this.stateBorders = _config.stateBorders
         this.collegeData = _config.collegeData
+        this.selectedCollege = _config.selectedCollege
         this.initVis()
     }
 
@@ -152,7 +153,6 @@ class DotDensityMap {
 
         // Add circles under the "Amount of mutual friends" label
         const circleData = [0.8, 1.8, 2.8, 3.8, 4.8]
-
         vis.svg.selectAll('.circle')
             .data(circleData)
             .join('circle')
@@ -175,6 +175,7 @@ class DotDensityMap {
             .join('circle')
             .attr('r', d => radiusScale(d.clustering_college))
             .attr('fill', d => colourScale(d.ec_own_ses_college))
+            .attr('class', d => (d.college === vis.selectedCollege?.college) ? 'map-blue-dot' : '')
             .style('opacity', 0.7)
 
         function showTooltip(event, d) {
@@ -195,7 +196,7 @@ class DotDensityMap {
 
             // Update the fill color of the hovered college to blue
             collegeGroups.selectAll('circle')
-                .style('fill', c => (c === d) ? '#60b1ef' : colourScale(c.ec_own_ses_college))
+                .attr('class', c => (c === d) ? 'map-blue-dot' : '')
                 .style('opacity', c => (c === d) ? 1 : 0.7)
 
             // Set the text color of the tooltip to black
@@ -216,6 +217,8 @@ class DotDensityMap {
 
             vis.dispatcher.call('highlightCollege', null, null)
         }
+        
+        d3.select('.map-blue-dot').raise()
 
         // Notify main.js that rendering is done
         vis.dispatcher.call('completedInitialLoad', null, "dot density map")

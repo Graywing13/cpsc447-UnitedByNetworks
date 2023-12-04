@@ -36,6 +36,7 @@ let filteredData
 function updateGraphs() {
     // Update with data
     dotDensityMap.collegeData = filteredData
+    dotDensityMap.selectedCollege = selectedCollege
     dotDensityMap.updateVis()
 
     // Sankey always displays all data, but the opacity of the marks change
