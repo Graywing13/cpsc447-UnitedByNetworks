@@ -143,8 +143,11 @@ class SankeyChart {
     }
 
     // Filter data and format it for rendering usages
-    updateVis() {
+    updateVis(config) {
         let vis = this
+        
+        // If this is lightweight (i.e. only the selected college changes), skip heavy filter logic
+        if (config?.lightweight) return vis.renderVis()
 
         // Filter for data that contains both variables of interest
         vis.data = vis.data.filter(d => d.ec_parent_ses_college_quartile && d.bias_own_ses_college_quartile)

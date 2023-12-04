@@ -52,8 +52,11 @@ class VariablesTable {
             .text('All Variables')
     }
 
-    updateVis() {
+    updateVis(config) {
         let vis = this
+        
+        // If this is lightweight (i.e. only the selected college changes), skip heavy filter logic
+        if (config?.lightweight) return vis.renderVis()
 
         // If persistence map is not initialized, set it to an obj of {name1: 0, name2: 1, name3: 2} etc.
         if (!vis.oldVariableOrder) {

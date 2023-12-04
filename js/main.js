@@ -52,6 +52,18 @@ function updateGraphs() {
     smallMultiplesScatterplotsWrapper.updateVis()
 }
 
+// Lightweight version of updateGraphs(), so that we aren't calling heavy filtering logic whenever user moves a mouse
+function updateGraphsTooltipOnly() {
+    dotDensityMap.selectedCollege = selectedCollege
+    dotDensityMap.updateVis({lightweight: true})
+    
+    sankeyChart.selectedCollege = selectedCollege
+    sankeyChart.updateVis({lightweight: true})
+    
+    smallMultiplesScatterplotsWrapper.selectedCollege = selectedCollege
+    smallMultiplesScatterplotsWrapper.updateVis({lightweight: true})
+}
+
 /**
  * ==[ DISPATCH HANDLERS ]==============================================================================================
  */
@@ -97,7 +109,7 @@ dispatcher.on('highlightCollege', highlightedCollege => {
     // Update the selected college in the main file
     selectedCollege = highlightedCollege
 
-    updateGraphs()
+    updateGraphsTooltipOnly()
 })
 
 /**

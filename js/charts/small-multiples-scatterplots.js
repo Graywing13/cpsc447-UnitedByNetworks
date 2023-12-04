@@ -111,7 +111,7 @@ class SmallMultiplesScatterplots {
             },
             dispatcher
         )
-        
+
         variablesTable = new VariablesTable({
             parentElement: '#column-description-table',
             descriptions: categoryNameAndDescription,
@@ -119,12 +119,30 @@ class SmallMultiplesScatterplots {
         })
     }
 
-    updateVis() {
+    updateVis(config) {
         let vis = this;
+
+        // If this is lightweight (i.e. only the selected college changes), skip heavy logic
+        //    and just pass the new college to the child components
+        if (config?.lightweight) {
+            plotOne.selectedCollege = vis.selectedCollege;
+            plotOne.updateVis(config);
+            
+            plotTwo.selectedCollege = vis.selectedCollege;
+            plotTwo.updateVis(config);
+            
+            plotThree.selectedCollege = vis.selectedCollege;
+            plotThree.updateVis(config);
+            
+            // variablesTable doesn't use selected college
+            
+            return; // The parent just passes logic down, and does not have its own renderVis()
+        }
 
         // Figure out correlation (if it exists)
         vis.correlationData = vis.calculatePearsonCorrelation(vis.data);
         vis.topCategories = vis.getTopCategories(vis.correlationData);
+        console.log(this.topCategories)
         vis.topThreeCategories = vis.topCategories.slice(0, 3).map(entry => entry && entry[0]);
 
         plotOne.data = vis.data;
@@ -132,24 +150,24 @@ class SmallMultiplesScatterplots {
         plotOne.correlationData = vis.correlationData;
         plotOne.topThreeCategories = vis.topThreeCategories;
         plotOne.selectedCollege = vis.selectedCollege;
-        plotOne.updateVis();
+        plotOne.updateVis(config);
 
         plotTwo.data = vis.data;
         plotTwo.maxParentSes = vis.maxParentSes;
         plotTwo.correlationData = vis.correlationData;
         plotTwo.topThreeCategories = vis.topThreeCategories;
         plotTwo.selectedCollege = vis.selectedCollege;
-        plotTwo.updateVis();
+        plotTwo.updateVis(config);
 
         plotThree.data = vis.data;
         plotThree.maxParentSes = vis.maxParentSes;
         plotThree.correlationData = vis.correlationData;
         plotThree.topThreeCategories = vis.topThreeCategories;
         plotThree.selectedCollege = vis.selectedCollege;
-        plotThree.updateVis();
-        
+        plotThree.updateVis(config);
+
         variablesTable.topCategories = vis.topCategories;
-        variablesTable.updateVis();
+        variablesTable.updateVis(config);
     }
 
     calculatePearsonCorrelation(data) {

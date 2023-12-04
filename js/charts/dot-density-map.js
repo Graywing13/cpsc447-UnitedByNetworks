@@ -107,8 +107,11 @@ class DotDensityMap {
             .text('Student SES')
     }
 
-    updateVis() {
+    updateVis(config) {
         let vis = this
+        
+        // If this is lightweight (i.e. only the selected college changes), skip heavy filter logic
+        if (config?.lightweight) return vis.renderVis()
 
         vis.collegeData = vis.collegeData.filter(d => (d.clustering_college !== '' && d.ec_own_ses_college !== ''))
 

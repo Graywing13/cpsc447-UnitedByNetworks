@@ -89,8 +89,11 @@ class SingleScatterplot {
             .text('x-axis: see italicized variable')
     }
 
-    updateVis() {
+    updateVis(config) {
         let vis = this
+        
+        // If this is lightweight (i.e. only the selected college changes), skip heavy filter logic
+        if (config?.lightweight) return vis.renderVis()
 
         // If the category's correlation does not exist (likely due to too few points), skip to renderVis
         vis.category = vis.topThreeCategories[vis.plotIndex]
