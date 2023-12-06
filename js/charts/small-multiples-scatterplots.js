@@ -142,7 +142,6 @@ class SmallMultiplesScatterplots {
         // Figure out correlation (if it exists)
         vis.correlationData = vis.calculatePearsonCorrelation(vis.data);
         vis.topCategories = vis.getTopCategories(vis.correlationData);
-        console.log(this.topCategories)
         vis.topThreeCategories = vis.topCategories.slice(0, 3).map(entry => entry && entry[0]);
 
         plotOne.data = vis.data;
