@@ -1,4 +1,7 @@
-# D3 Project Starter Template
+# United By Networks: Visualizing Social Capital Trends Across US Colleges
+
+CPSC 447 Project, Group 02 (Megan, Vanessa, Risa, Noreen)
+
 
 ### Notes
 - This is meant for a screen size of at least 1600x900
