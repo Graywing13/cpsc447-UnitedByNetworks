@@ -410,22 +410,12 @@ class SankeyChart {
                     // Add node labels
                     const labels = groups.append('text')
                         .attr('class', 'sankey-node-label')
-                        .attr('id', d => d.label.replaceAll(' ', '-'))
                         .attr('x', d => d.x0 < vis.width / 2 ? d.x0 - 8 : d.x1 + 8)
                         .attr('y', d => (d.y1 + d.y0) / 2)
                         .attr('dy', '0.35em')
                         .attr('text-anchor', d => d.x0 < vis.width / 2 ? 'end' : 'start')
                         .text(d => d.label)
                         .raise()
-
-                    d3.select('#High-bias')
-                        .text('')
-                        .append('tspan')
-                        .text('High')
-                        .append('tspan')
-                        .attr('dx', '-2.1em')
-                        .attr('dy', '1.2em')
-                        .text('bias')
 
                     return groups
                 },

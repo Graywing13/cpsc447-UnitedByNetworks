@@ -9,6 +9,7 @@ const WRITE_FILE = PATH + 'preprocessed-' + FILE_NAME
 
 // Quartile metadata. `quartiles` are as follows: [ min, 1st-quartile, median, 3rd-quartile, max + delta ].
 //   - A small delta is added to the max to ensure the largest number is assigned a quarter as well.
+//   - Quartiles were calculated in excel using the formula =QUARTILE(INDIRECT(<row letter> & ":"& <row letter>), <quartile number>)
 const FIELDS_TO_QUANTIZE = [
     {name: 'ec_parent_ses_college', index: 7, quartiles: [0.27296999, 0.881819975, 1.14026, 1.3625, 1.73146 + 0.00001]},
     {name: 'bias_own_ses_college', index: 15, quartiles: [-0.15622, -0.0197575, -0.00238, 0.0272075, 0.38223001 + 0.00000001]}

@@ -1,10 +1,10 @@
 # D3 Project Starter Template
 
-Notes
+### Notes
 - This is meant for a screen size of at least 1600x900
 - Zoom may need to be reduced to 50-67% to display all content
 
-Supported Features
+### Supported Features
 - Core Visualization: 
   - Dot Density map -- bidirectional linking with both sankey and small multiples scatterplot
   - Sankey -- filter data in map & scatterplots by clicking links, connected boxplots at the side for more information
@@ -15,7 +15,7 @@ Supported Features
   - Light/dark mode -- to aid with luminance contrast
   - Label tooltips (e.g. on Sankey's friending bias & the rankings table)
 
-Resources
+### Resources
 - D3 Sankey usage: 
   - Resources
     - https://observablehq.com/@d3/sankey/2?collection=@d3/d3-sankey
@@ -46,7 +46,7 @@ Resources
     - Used our own scales generator
     - Converted this to join()
 
-Special thanks
+### Special thanks
 - StackOverflow
   - Joining groups: https://stackoverflow.com/a/68201968
   - Inspiration for storing variable changes: https://stackoverflow.com/a/23411456
