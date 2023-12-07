@@ -19,7 +19,6 @@ CPSC 447 Project, Group 02 (Megan, Vanessa, Risa, Noreen)
   - Label tooltips (e.g. on Sankey's friending bias & the rankings table)
 
 ### Resources
-- ChatGPT
 - D3 Sankey usage: 
   - Resources
     - https://observablehq.com/@d3/sankey/2?collection=@d3/d3-sankey
@@ -49,6 +48,8 @@ CPSC 447 Project, Group 02 (Megan, Vanessa, Risa, Noreen)
     - Created our own points generator
     - Used our own scales generator
     - Converted this to join()
+- Scatterplots & US Map
+    - ChatGPT
 
 ### Special thanks
 - StackOverflow
