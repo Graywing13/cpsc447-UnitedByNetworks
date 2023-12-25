@@ -1,5 +1,8 @@
 # United By Networks: Visualizing Social Capital Trends Across US Colleges
 
+**Demo: https://www.students.cs.ubc.ca/~cs-447/23Sep/fame/projects/g02/index.html**
+Hall of fame: https://www.students.cs.ubc.ca/~cs-447/23Sep/fame/
+
 CPSC 447 Project, Group 02 (Megan, Vanessa, Risa, Noreen)
 
 
